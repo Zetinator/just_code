@@ -2,7 +2,7 @@ def kompare(A,B):
     mins = []
     A = A.split(',')
     B = B.split(',')
-    def backtracking(A, B, mins):
+    def go_deep(A, B, mins):
         if B == []: return mins
         def go_deeper(A, word, n):
             if A == []: return n
@@ -11,12 +11,12 @@ def kompare(A,B):
             else:
                 return go_deeper(A[1:], word, n)
         mins.append(go_deeper(A, B[0], 0))
-        return backtracking(A, B[1:], mins)
-    return backtracking(A, B, mins)
+        return go_deep(A, B[1:], mins)
+    return go_deep(A, B, mins)
 
 # testing
 A = 'abcd,aabc,bd'
 B = 'aaa,aa'
 
-print('Testing: {} vs {}'.format(A,B))
+print('testing with A:{} vs B:{}'.format(A,B))
 print(str(kompare(A,B)))

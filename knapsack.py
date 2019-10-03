@@ -1,7 +1,7 @@
 from functools import lru_cache
 @lru_cache(maxsize=512)
 def go_deep(v, w, c_value, c_capacity):
-    if w == (): return c_value
+    if not w: return c_value
     i_value = v[0]
     i_weight = w[0]
     if c_capacity - i_weight < 0:

@@ -19,21 +19,25 @@ Example:
 def days_to_bloom(x: 'array with fowers to bloom',
                   k: 'flowers per bouquet',
                   n: 'number of bouquets to fill') -> 'days to fill':
-    subarrays = []
-    for i in range(len(x)-(k-1)):
-        subarray = []
-        for j in range(k):
-            subarray.append(x[i+j])
-        subarrays.append(subarray)
-    subarrays = sorted(subarrays, key=lambda x: sum(x))
-    ans = 0
-    for e in subarrays[:n]:
-        if max(e) > ans: ans = max(e)
-    return ans
+    def divide(x, k, ans):
+        print(f'STATUS DIVIDE: x:{x}, ans:{ans}')
+        if len(x) < k: return ans
+        if not ans: return divide(x[1:], k, [x[:k]])
+        for i in range(len(ans)):
+            if sum(x[:k]) < sum(ans[i]):
+                ans.insert(i,x[:k])
+                return divide(x[1:], k, ans)
+        ans.insert(len(ans), x[:k])
+        return divide(x[1:], k, ans)
+    def conquer(x):
+        print(f'STATUS CONQUER: x:{x}')
+        if not x: return 0
+        return max(max(x[0]), conquer(x[1:]))
+    return conquer(divide(x, k, [])[:n])
 
 # test
 roses = [1, 2, 4, 9, 3, 4, 1]
-k = 2
+k = 4
 n = 2
 print(f'testing with: {roses}')
 print(f'ANS: {days_to_bloom(roses, k ,n)}')

@@ -7,13 +7,13 @@ def merge(x):
         ans = []
         while y and x:
             if x[0] < y[0]:
-                ans.append(x.pop(x.index(min(x))))
+                ans.append(x.pop(0))
             else:
-                ans.append(y.pop(y.index(min(y))))
+                ans.append(y.pop(0))
         while x:
-            ans.append(x.pop(x.index(min(x))))
+            ans.append(x.pop(0))
         while y:
-            ans.append(y.pop(y.index(min(y))))
+            ans.append(y.pop(0))
         print('MERGE: {}'.format(ans))
         return ans
     return divide(x)

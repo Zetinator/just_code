@@ -54,6 +54,15 @@ class linked_list():
                 return 0
             current_node = current_node.next
         return -1
+    def traverse(self):
+        if self.head.v == None: return -1
+        current_node = self.head
+        index = 0
+        while current_node.next:
+            print(f'STATUS: index:{index}, value:{current_node.v}')
+            index += 1
+            current_node = current_node.next
+        return
 
 
 # test

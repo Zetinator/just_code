@@ -3,9 +3,11 @@ def bubble(x):
     while swap:
         print('STATE: {}'.format(x))
         swap = False
-        for i, e in enumerate(x[:-1]):
+        to_sort = 1
+        for i, e in enumerate(x[:-to_sort]):
             if x[i] > x[i+1]:
                 x[i], x[i+1] = x[i+1], x[i] 
+                to_sort += 1
                 swap = True
     return x
 

@@ -8,10 +8,14 @@ def deep_sort(x):
 def bs(x, v):
     def deep(x, v, n):
         print(f'STATUS: x:{x}, n:{n}')
+        if not x: raise KeyError(f'{v}: NOT FOUND')
         if x[len(x)//2] == v: return n
-        if x[len(x)//2] < v: return deep(x[n+1:], v, n+len(x[n+1:])//2)
-        if x[len(x)//2] > v: return deep(x[:n], v, n-len(x[:n])//2)
-        raise KeyError(f'{v}: NOT FOUND')
+        if x[len(x)//2] < v:
+            right = x[len(x)//2+1:]
+            return deep(right, v, n - (-len(right)//2))
+        else:
+            left = x[:len(x)//2]
+            return deep(left, v, n + (-len(left)//2))
     return deep(x, v, len(x)//2)
 
 # test
@@ -20,4 +24,4 @@ test = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]
 print(f'testing with: {test}')
 test = deep_sort(test)
 print(f'ordered: {test}')
-# print('ANS: {}'.format(bs(test, 12)))
+print('ANS: {}'.format(bs(test, 5)))

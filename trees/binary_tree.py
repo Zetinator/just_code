@@ -19,6 +19,20 @@ class bt():
             deep(current_node.right, n+1)
         return deep(self.root, 0)
 
+    def min(self):
+        def deep(current_node):
+            if not current_node: return self.root
+            if not current_node.left: return current_node
+            return deep(current_node.left)
+        return deep(self.root)
+
+    def max(self):
+        def deep(current_node):
+            if not current_node: return self.root
+            if not current_node.right: return current_node
+            return deep(current_node.right)
+        return deep(self.root)
+
     def max_depth(self):
         def deep(current_node, n):
             if not current_node: return n
@@ -74,7 +88,7 @@ class bt():
                     if current_node.right: parent.left = current_node.right
                     if not current_node.right: parent.left = None
                 return current_node
-            return deep(current_node, current_node.left)
+            return deep(current_node, current_node.left, 0)
         return deep(node, node.right, 1)
 
     def delete(self, v):

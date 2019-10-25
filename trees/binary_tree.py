@@ -58,21 +58,19 @@ class bt():
         return node
 
     def insert(self, v):
-        if not self.root:  # empty tree
-            self.root = self.node(v)
-            return
         def deep(v, current_node):
-            if v == current_node.value: raise ValueError('No duplicates allowed!')
+            if not current_node: self.root = self.node(v); return
+            if v == current_node.value: raise ValueError('no duplicates allowed!')
             if v < current_node.value:
-                if not current_node.left:
+                if current_node.left:
+                    deep(v, current_node.left)
+                else:
                     current_node.left = self.node(v)
-                    return
-                else: return deep(v, current_node.left)
             else:
-                if not current_node.right:
+                if current_node.right:
+                    deep(v, current_node.right)
+                else:
                     current_node.right = self.node(v)
-                    return
-                else: return deep(v, current_node.right)
         return deep(v, self.root)
 
     def retrieve_successor(self, node):

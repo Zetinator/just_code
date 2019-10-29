@@ -9,6 +9,7 @@ def sum_submins(x: 'array of integers') -> 'sum of mins of subarrays':
     ans = []
     for i in range(len(x)):
         for j in range(i+1,len(x)+1):
+            print(f'status: f:{x[i:j]}')
             ans.append(min(x[i:j]))
     return sum(ans)
 

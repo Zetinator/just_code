@@ -3,6 +3,7 @@ the ADT contains the following methods:
     - insert
     - search
     - travese
+    - delete
 """
 class AVL():
     class Node():
@@ -21,6 +22,9 @@ class AVL():
                 self.insert(e)
 
     def rotate_left(self, pivot):
+        """left rotation...
+        https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
+        """
         aux_node = self.Node(pivot.data)
         aux_node.left, aux_node.right = pivot.left, pivot.right.left
         # replace
@@ -31,6 +35,9 @@ class AVL():
         self.update_weights(pivot)
 
     def rotate_right(self, pivot):
+        """right rotation...
+        https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
+        """
         aux_node = self.Node(pivot.data)
         aux_node.left, aux_node.right = pivot.left.right, pivot.right
         # replace
@@ -41,11 +48,14 @@ class AVL():
         self.update_weights(pivot)
 
     def update_weights(self, node):
+        """method to compute the weights of a node given the weights of its children
+        the default weight of a node is 1, and the null node is 0
+        """
         height = lambda x: x.height if x else 0
         node.height = max(height(node.left), height(node.right)) + 1
 
     def insert(self, x):
-        """insert a new node into the bst
+        """insert a new node into the bst, and rebalance
         """
         # special case: empty bst
         if not self.root: self.root = self.Node(x); return
@@ -67,6 +77,7 @@ class AVL():
             # rebalance
             height = lambda x: x.height if x else 0
             balance_factor = height(current_node.right) - height(current_node.left)
+            # rotations...
             if balance_factor < -1:  # case: left
                 if x > current_node.left.data:  # case: left-right
                     self.rotate_left(current_node.left)
@@ -80,7 +91,7 @@ class AVL():
         deep(self.root, x)
 
     def search(self, x):
-        """search for 'x' in the tree
+        """standard search for 'x' in the tree
         """
         def deep(current_node, x):
             if not current_node: raise ValueError(f'{x} not in the tree')
@@ -92,6 +103,8 @@ class AVL():
         return deep(self.root, x)
 
     def traverse(self, node=None):
+        """print the contents of the tree as well as usefull information.
+        """
         def deep(current_node, level):
             if not current_node: return
             deep(current_node.left, level+1)
@@ -106,7 +119,11 @@ class AVL():
             deep(current_node.right, level+1)
         return deep(self.root, 0)
     
-# test
+    def __repr__(self):
+        self.traverse()
+        return f'{self.__dict__}:'
+    
+# test the implementation:
 test = AVL([33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63])
 print(f'test:')
 test.traverse()

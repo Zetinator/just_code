@@ -105,7 +105,7 @@ class AVL():
         return self.traverse(self.root)
 
 # test
-test = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]
+test = [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]
 print(f'testing with: {test}')
 tree = AVL()
 for e in test: tree.insert(e)

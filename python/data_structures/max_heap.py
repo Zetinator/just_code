@@ -44,8 +44,8 @@ class Heap():
         # swap max <-> last
         _[0], _[-1] = _[-1], _[0]
         maximum = _.pop()
-        left = lambda i: i*2 + 1
-        right = lambda i: i*2 + 2
+        left = lambda i: i<<1 + 1
+        right = lambda i: i<<1 + 2
         i = 0
         while (left(i) < len(_) and _[left(i)] > _[i]) or \
                (right(i) < len(_) and _[right(i)] > _[i]):

@@ -8,6 +8,8 @@ from double_linked_list import DoubleLinkedList
 from queue import Queue
 from stack import Stack
 from trie import Trie
+from graph import Graph
+from wgraph import WGraph
 
 class TestDataStructures(unittest.TestCase):
 
@@ -51,6 +53,28 @@ class TestDataStructures(unittest.TestCase):
         keys  = 'erick quiere mucho a su marion aunque ella ya no nos quiera tanto'.split()
         trie = Trie(keys)
         self.assertEqual(trie.search('marion'), 'marion')
+
+    def test_graph(self):
+        graph = { "a" : ["c"],
+                  "b" : ["c", "e"],
+                  "c" : ["a", "b", "d", "e"],
+                  "d" : ["c"],
+                  "e" : ["c", "b"],
+                  "f" : []
+                }
+        graph = Graph(graph)
+        self.assertEqual(graph.neighbors('b'), ["c", "e"])
+
+    def test_wgraph(self):
+        graph = {0: [(1, 1),(2, 7)],
+                  1 : [(3, 9), (5, 15)],
+                  2 : [(4, 4)],
+                  3 : [(4, 10), (5, 5)],
+                  4 : [(5, 3)],
+                  5 : []
+                }
+        graph = WGraph(graph)
+        self.assertEqual(graph.neighbors(2), [(4, 4)])
 
 if __name__ == '__main__':
     unittest.main()

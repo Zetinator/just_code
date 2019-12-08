@@ -1,6 +1,7 @@
 """
 https://www.hackerrank.com/challenges/sherlock-and-anagrams/problem?h_r=internal-search
 """
+from collections import Counter
 
 def sherlockAndAnagrams(s):
     sets = []

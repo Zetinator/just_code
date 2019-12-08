@@ -9,51 +9,123 @@ class ST():
     class Node():
         """Node basic chainable storage unit
         """
-        def __init__(self, data=None):
-            self.data = None
+        def __init__(self, data=None, index=None):
+            self.data = data
+            self.index = index
             self.left = None
             self.right = None
 
     def __init__(self, v):
-        self.root = self.Node((0, len(v)))
         self.v = v
-        self.build(v)
+        self.build()
 
-    def build(self, v):
-        if not v: return
-        def r_build(_from, _to, current_node):
-            print(f'STATUS: from: {_from}, to: {_to}, v: {self.v[_from:_to]}')
-            # base case: empty interval
-            if not self.v[_from:_to]: return
+    def build(self):
+        if not self.v: return
+        self.root = self.Node()
+        L, R = 0, len(self.v)-1
+        def r_build(current_node, L, R):
+            # base case: L > R
+            if L > R: return
             # base case: just one element in the interval
-            if len(self.v[_from:_to]) == 1:
-                current_node.data = self.v[_from:_to]
-                return
+            if L == R:
+                return self.Node(self.v[L], (L,R))
             # divide
-            m =-(-_to//2)  # integer division + ceil
-            if self.v[_from:m]:
-                print('left')
-                current_node.left = self.Node()
-                r_build(_from, m, current_node.left)
-            if self.v[m:_to]:
-                print('right')
-                current_node.right = self.Node()
-                r_build(m, _to, current_node.right)
+            m = (L+R)//2
+            current_node.left = r_build(self.Node(), L, m)
+            current_node.right = r_build(self.Node(), m+1, R)
             # conquer
-            get_val = lambda x: x.data if x else -float('inf')
+            get_val = lambda x: x.data if x else -float('inf')  # None = -inf
             current_node.data = max(get_val(current_node.left), get_val(current_node.right))
-        return r_build(0, len(self.v), self.root)
+            current_node.index=((L,R))
+            return current_node
+        return r_build(self.root, L, R)
+
+    """
+    # pythonic way... not working because of how python cuts the arrays
+    ------------------------------------------------------------------
+    		 --> (3)[(0, 0)]
+	 --> (5)[(0, 2)]
+			 --> (5)[(1, 1)]
+		 --> (5)[(1, 2)]
+			 --> (4)[(2, 2)]
+ --> (9)[(0, 6)]
+			 --> (1)[(3, 3)]
+		 --> (6)[(3, 4)]
+			 --> (6)[(4, 4)]
+	 --> (9)[(3, 6)]
+			 --> (0)[(5, 5)]
+		 --> (9)[(5, 6)]
+			 --> (9)[(6, 6)]
+    ------------------------------------------------------------------
+    vs
+    ------------------------------------------------------------------
+    			 --> (3)[(0, 0)]
+		 --> (5)[(0, 1)]
+			 --> (5)[(1, 1)]
+	 --> (5)[(0, 3)]
+			 --> (4)[(2, 2)]
+		 --> (4)[(2, 3)]
+			 --> (1)[(3, 3)]
+ --> (9)[(0, 6)]
+			 --> (6)[(4, 4)]
+		 --> (6)[(4, 5)]
+			 --> (0)[(5, 5)]
+	 --> (9)[(4, 6)]
+		 --> (9)[(6, 6)]
+    """
+    def p_build(self):
+        if not self.v: return
+        self.root = self.Node()
+        index = [_ for _ in range(len(self.v))]
+        def r_build(current_node, v, index):
+            # base case: empty interval
+            if not v: return
+            print(f'STATUS: v: {v}')
+            # base case: just one element in the interval
+            if len(v) == 1:
+                return self.Node(v[0], index=(index[0], index[-1]))
+            # divide
+            m = len(v)//2
+            current_node.left = r_build(self.Node(), v[:m], index[:m])
+            current_node.right = r_build(self.Node(), v[m:], index[m:])
+            # conquer
+            get_val = lambda x: x.data if x else -float('inf')  # None = -inf
+            current_node.data = max(get_val(current_node.left), get_val(current_node.right))
+            current_node.index=(index[0], index[-1])
+            return current_node
+        return r_build(self.root, self.v, index)
             
+    def query(self, _from, _to):
+        # special case: empty tree
+        if not self.root: return
+        # special case: invalid range as input
+        if _from > _to: return
+        L, R = 0, len(self.v)-1
+        def deep(current_node, L, R, _from, _to):
+            if not current_node or _from > _to: return -float('inf')
+            print(f'STATUS: node:{current_node.data}, L:{L}, R:{R}, _from:{_from}, _to:{_to}')
+            if _from <= L and R <= _to: return current_node.data
+            m = (L+R)//2
+            return max(deep(current_node.left, L, m, _from, min(m, _to)),
+                        deep(current_node.right, m+1, R, max(_from, m+1), _to))
+        return deep(self.root, L, R, _from, _to)
+
+            
+
+
     def traverse(self):
         """traverse the tree
         """
-        def deep(current_node):
+        def deep(current_node, level):
             if not current_node: return
-            deep(current_node.left)
-            print(f'{current_node.data}')
-            deep(current_node.right)
-        return deep(self.root)
+            deep(current_node.left, level+1)
+            print('\t'*level, f'--> ({current_node.data})[{current_node.index}]')
+            deep(current_node.right, level+1)
+        return deep(self.root, level=0)
+    
+    def __repr__(self):
+        self.traverse()
+        return f'{self.__dict__}:'
     
 # test
-test = ST([3,5,4,1,6,0,9])
-print(f'test:')
+tree = ST([3,5,4,1,6,0,9])

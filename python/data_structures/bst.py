@@ -56,12 +56,16 @@ class BST():
     def traverse(self):
         """traverse the tree
         """
-        def deep(current_node):
+        def deep(current_node, level):
             if not current_node: return
-            deep(current_node.left)
-            print(f'{current_node.data}')
-            deep(current_node.right)
-        return deep(self.root)
+            deep(current_node.left, level+1)
+            print('\t'*level, f'--> ({current_node.data})')
+            deep(current_node.right, level+1)
+        return deep(self.root, level=0)
+    
+    def __repr__(self):
+        self.traverse()
+        return f'{self.__dict__}:'
     
     def retrieve_successor(self, node):
         # first some pruning

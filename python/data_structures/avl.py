@@ -102,31 +102,25 @@ class AVL():
                 return deep(current_node.right, x)
         return deep(self.root, x)
 
-    def traverse(self, node=None):
-        """print the contents of the tree as well as usefull information.
+    def traverse(self):
+        """traverse the tree
         """
         def deep(current_node, level):
             if not current_node: return
             deep(current_node.left, level+1)
-            height = lambda node: node.height if node else 0
-            balance_factor = height(current_node.left) - height(current_node.right)
-            print('current_node: value:{0:<5} level:{1:<5} weight:{2:<5} balance:{3:>3}'\
-                        .format(current_node.data,
-                                level,
-                                current_node.height,
-                                balance_factor
-                                ))
+            print('\t'*level, f'--> ({current_node.data})')
             deep(current_node.right, level+1)
-        return deep(self.root, 0)
+        return deep(self.root, level=0)
     
     def __repr__(self):
         self.traverse()
         return f'{self.__dict__}:'
     
 # test the implementation:
-test = AVL([33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63])
-print(f'test:')
-test.traverse()
+test = [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]
+print(f'testing with: {test}')
+tree = AVL(test)
+tree.traverse()
 
 
 

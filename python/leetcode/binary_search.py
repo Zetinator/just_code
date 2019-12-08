@@ -5,7 +5,19 @@ def deep_sort(x):
     mayor = deep_sort([e for e in x[1:] if e >= pivot])
     return minor + [pivot] + mayor
 
-def bs(x, v):
+def bs(x, val):
+    _from, _to = 0, len(x)-1
+    while _from < _to:
+        m = (_from + _to)//2
+        if x[m] == val: return m
+        if val < x[m]:
+            _to = m
+        else:
+            _from = m+1
+    raise ValueError(f'{val} not found')
+
+# recursive
+def r_bs(x, v):
     def deep(x, v, n):
         print(f'STATUS: x:{x}, n:{n}')
         if not x: raise KeyError(f'{v}: NOT FOUND')
@@ -19,9 +31,7 @@ def bs(x, v):
     return deep(x, v, len(x)//2)
 
 # test
-# test = [1, 3, 2, 6, 5, 2, 5, 0]
-test = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]
-print(f'testing with: {test}')
-test = deep_sort(test)
-print(f'ordered: {test}')
-print('ANS: {}'.format(bs(test, 5)))
+test = [2, 3, 4, 5, 15, 19, 26, 27, 36, 38, 44, 46, 47, 48, 50]
+val = 5
+print(f'testing with: {test}, look for: {val}')
+print(f'ANS: {bs(test, val)}')

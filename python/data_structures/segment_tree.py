@@ -10,7 +10,7 @@ class ST():
         """Node basic chainable storage unit
         """
         def __init__(self, data=None, index=None):
-            self.data = data
+            self.value = data
             self.index = index
             self.left = None
             self.right = None
@@ -34,8 +34,8 @@ class ST():
             current_node.left = r_build(self.Node(), L, m)
             current_node.right = r_build(self.Node(), m+1, R)
             # conquer
-            get_val = lambda x: x.data if x else -float('inf')  # None = -inf
-            current_node.data = max(get_val(current_node.left), get_val(current_node.right))
+            get_val = lambda x: x.value if x else -float('inf')  # None = -inf
+            current_node.value = max(get_val(current_node.left), get_val(current_node.right))
             current_node.index=((L,R))
             return current_node
         return r_build(self.root, L, R)
@@ -48,7 +48,7 @@ class ST():
         L, R = 0, len(self.v)-1
         def deep(current_node, L, R, _from, _to):
             if not current_node or _from > _to: return -float('inf')
-            if _from <= L and R <= _to: return current_node.data
+            if _from <= L and R <= _to: return current_node.value
             m = (L+R)//2
             return max(deep(current_node.left, L, m, _from, min(m, _to)),
                         deep(current_node.right, m+1, R, max(_from, m+1), _to))
@@ -60,7 +60,7 @@ class ST():
         def deep(current_node, level):
             if not current_node: return
             deep(current_node.left, level+1)
-            print('\t'*level, f'--> ({current_node.data})[{current_node.index}]')
+            print('\t'*level, f'--> ({current_node.value})[{current_node.index}]')
             deep(current_node.right, level+1)
         return deep(self.root, level=0)
     

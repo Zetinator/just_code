@@ -10,7 +10,7 @@ class BST():
         """Node basic chainable storage unit
         """
         def __init__(self, x=None):
-            self.data = x
+            self.value = x
             self.left = None
             self.right = None
 
@@ -27,8 +27,8 @@ class BST():
         if not self.root: self.root = self.Node(x); return
         # general case
         def deep(current_node, x):
-            if current_node.data == x: raise ValueError('No duplicates allowed!')
-            if x < current_node.data:
+            if current_node.value == x: raise ValueError('No duplicates allowed!')
+            if x < current_node.value:
                 if current_node.left:
                     deep(current_node.left, x)
                 else:
@@ -46,8 +46,8 @@ class BST():
         """
         def deep(current_node, x):
             if not current_node: raise ValueError(f'{x} not in the tree')
-            if current_node.data == x: return current_node
-            if x < current_node.data:
+            if current_node.value == x: return current_node
+            if x < current_node.value:
                 return deep(current_node.left, x)
             else:
                 return deep(current_node.right, x)
@@ -59,7 +59,7 @@ class BST():
         def deep(current_node, level):
             if not current_node: return
             deep(current_node.left, level+1)
-            print('\t'*level, f'--> ({current_node.data})')
+            print('\t'*level, f'--> ({current_node.value})')
             deep(current_node.right, level+1)
         return deep(self.root, level=0)
     
@@ -89,7 +89,7 @@ class BST():
         """
         def deep(v, parent, current_node, righteous=1):
             if not current_node: return False
-            if current_node.data == v:
+            if current_node.value == v:
                 # case: no children --> set None
                 if not current_node.left and not current_node.right:
                     if not parent:  # are you root?
@@ -103,7 +103,7 @@ class BST():
                 # case: 2 children --> replace with successor
                 if current_node.left and current_node.right:
                     tmp_node = self.retrieve_successor(current_node)
-                    current_node.data = tmp_node.data
+                    current_node.value = tmp_node.value
                     return True
                 # case: one children --> bypass
                 if current_node.left or current_node.right:
@@ -116,7 +116,7 @@ class BST():
                         parent.left = current_node.left or current_node.right
                     return True
             # sorry mate... keep looking
-            if v < current_node.data:
+            if v < current_node.value:
                 return deep(v, current_node, current_node.left, 0)
             else:
                 return deep(v, current_node, current_node.right, 1)

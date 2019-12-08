@@ -11,7 +11,7 @@ class DoubleLinkedList():
         """Node basic chainable storage unit
         """
         def __init__(self, x=None, prev=None):
-            self.data = x
+            self.value = x
             self.prev = prev
             self.next = None
 
@@ -38,7 +38,7 @@ class DoubleLinkedList():
         """
         current_node = self.head
         while current_node:
-            if current_node.data == x: return current_node
+            if current_node.value == x: return current_node
             current_node = current_node.next
         raise ValueError(f'{x} not found')
 
@@ -70,13 +70,13 @@ class DoubleLinkedList():
         # special case: empty list
         if not self.head: raise ValueError(f'{x} not in the list')
         # special case: delete head
-        if self.head.data == x:
+        if self.head.value == x:
             self.head = self.head.next
             return
         # general case
         current_node = self.head
         while current_node.next:
-            if current_node.next.data == x:
+            if current_node.next.value == x:
                 current_node.next = current_node.next.next
                 return
             current_node = current_node.next
@@ -87,6 +87,6 @@ class DoubleLinkedList():
         """
         current_node = self.head
         while current_node:
-            print(f'{current_node.data}', end=' -> ')
+            print(f'{current_node.value}', end=' -> ')
             current_node = current_node.next
         print('null')

@@ -9,7 +9,7 @@ class Stack():
         """Node basic chainable storage unit
         """
         def __init__(self, x=None):
-            self.data = x
+            self.value = x
             self.next = None
 
     def __init__(self, x=None):

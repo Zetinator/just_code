@@ -10,7 +10,7 @@ class AVL():
         """Node basic chainable storage unit
         """
         def __init__(self, x=None):
-            self.data = x
+            self.value = x
             self.height = 1
             self.left = None
             self.right = None
@@ -25,10 +25,10 @@ class AVL():
         """left rotation...
         https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
         """
-        aux_node = self.Node(pivot.data)
+        aux_node = self.Node(pivot.value)
         aux_node.left, aux_node.right = pivot.left, pivot.right.left
         # replace
-        pivot.data = pivot.right.data
+        pivot.value = pivot.right.value
         pivot.left, pivot.right = aux_node, pivot.right.right
         # update weights
         self.update_weights(pivot.left)
@@ -38,10 +38,10 @@ class AVL():
         """right rotation...
         https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
         """
-        aux_node = self.Node(pivot.data)
+        aux_node = self.Node(pivot.value)
         aux_node.left, aux_node.right = pivot.left.right, pivot.right
         # replace
-        pivot.data = pivot.left.data
+        pivot.value = pivot.left.value
         pivot.left, pivot.right = pivot.left.left, aux_node
         # update weights
         self.update_weights(pivot.right)
@@ -61,8 +61,8 @@ class AVL():
         if not self.root: self.root = self.Node(x); return
         # execute normal insertion
         def deep(current_node, x):
-            if current_node.data == x: raise ValueError('No duplicates allowed!')
-            if x < current_node.data:
+            if current_node.value == x: raise ValueError('No duplicates allowed!')
+            if x < current_node.value:
                 if current_node.left:
                     deep(current_node.left, x)
                 else:
@@ -79,12 +79,12 @@ class AVL():
             balance_factor = height(current_node.right) - height(current_node.left)
             # rotations...
             if balance_factor < -1:  # case: left
-                if x > current_node.left.data:  # case: left-right
+                if x > current_node.left.value:  # case: left-right
                     self.rotate_left(current_node.left)
                 self.rotate_right(current_node)
                 return
             if balance_factor > 1:  #case: right
-                if x < current_node.right.data:  # case: right-left
+                if x < current_node.right.value:  # case: right-left
                     self.rotate_right(current_node.right)
                 self.rotate_left(current_node)
                 return
@@ -95,8 +95,8 @@ class AVL():
         """
         def deep(current_node, x):
             if not current_node: raise ValueError(f'{x} not in the tree')
-            if current_node.data == x: return current_node
-            if x < current_node.data:
+            if current_node.value == x: return current_node
+            if x < current_node.value:
                 return deep(current_node.left, x)
             else:
                 return deep(current_node.right, x)
@@ -108,7 +108,7 @@ class AVL():
         def deep(current_node, level):
             if not current_node: return
             deep(current_node.left, level+1)
-            print('\t'*level, f'-->({current_node.data})')
+            print('\t'*level, f'-->({current_node.value})')
             deep(current_node.right, level+1)
         return deep(self.root, level=0)
     

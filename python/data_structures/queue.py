@@ -9,7 +9,7 @@ class Queue():
         """Node basic chainable storage unit
         """
         def __init__(self, x=None, prev=None):
-            self.data = x
+            self.value = x
             self.prev = prev
             self.next = None
 

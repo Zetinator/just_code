@@ -90,8 +90,3 @@ class DoubleLinkedList():
             print(f'{current_node.data}', end=' -> ')
             current_node = current_node.next
         print('null')
-
-# test
-test = DoubleLinkedList(range(10))
-print(f'test:')
-test.traverse()

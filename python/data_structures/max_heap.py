@@ -55,8 +55,3 @@ class Heap():
             _[i], _[max_child] = _[max_child], _[i]
             i = max_child
         return maximum
-
-# test
-test = Heap([33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63])
-print(f'input: [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]')
-print(f'heap: {test._}')

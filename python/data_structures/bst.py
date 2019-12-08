@@ -122,7 +122,3 @@ class BST():
                 return deep(v, current_node, current_node.right, 1)
         if not deep(v, None, self.root): raise KeyError(f'{v} is not in the tree, nothing to remove')
         return True
-
-# test
-test = BST([3,5,4,1,6,0,9])
-print(f'test:')

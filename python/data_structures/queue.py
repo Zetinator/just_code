@@ -49,8 +49,5 @@ class Queue():
         tmp = self.tail
         self.tail = self.tail.prev
         return tmp
-        
 # test
 test = Queue(range(10))
-print(f'test:')
-

@@ -108,19 +108,10 @@ class AVL():
         def deep(current_node, level):
             if not current_node: return
             deep(current_node.left, level+1)
-            print('\t'*level, f'--> ({current_node.data})')
+            print('\t'*level, f'-->({current_node.data})')
             deep(current_node.right, level+1)
         return deep(self.root, level=0)
     
     def __repr__(self):
         self.traverse()
         return f'{self.__dict__}:'
-    
-# test the implementation:
-test = [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]
-print(f'testing with: {test}')
-tree = AVL(test)
-tree.traverse()
-
-
-

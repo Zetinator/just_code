@@ -89,8 +89,3 @@ class LinkedList():
             print(f'{current_node.data}', end=' -> ')
             current_node = current_node.next
         print('null')
-
-# test
-test = LinkedList(range(10))
-print(f'test:')
-test.traverse()

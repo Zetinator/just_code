@@ -5,12 +5,14 @@ Output: 17
 Explanation: Subarrays are [3], [1], [2], [4], [3,1], [1,2], [2,4], [3,1,2], [1,2,4], [3,1,2,4].
 Minimums are 3, 1, 2, 4, 1, 1, 2, 1, 1, 1.  Sum is 17.
 """
-def sum_submins(x: 'array of integers') -> 'sum of mins of subarrays':
+def sum_submins(x: list) -> int:
+    """returns the sum of the min's in all possible substrings
+    """
     ans = []
+    # get all substrings
     for i in range(len(x)):
-        for j in range(i+1,len(x)+1):
-            print(f'status: f:{x[i:j]}')
-            ans.append(min(x[i:j]))
+        for j in range(i,len(x)):
+            ans.append(min(x[i:j+1]))
     return sum(ans)
 
 # test

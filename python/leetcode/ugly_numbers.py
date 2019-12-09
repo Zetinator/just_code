@@ -1,19 +1,25 @@
+"""the ugly numbers
+https://www.geeksforgeeks.org/ugly-numbers/
+"""
 from math import log
 from functools import lru_cache
 @lru_cache(maxsize=512)
-def check_base(number:'number to check',
-                base: int = 2) -> 'residual':
+def check_base(number: int, base: int=2) -> int:
+    """check if the number is divisible by 'base'
+    """
     if number % base != 0: return number
     return check_base(number/base, base)
 
 def ugly_number(n):
+    """returns the n'th ugly number
+    ugly numbers are numbers whose only prime factors are 2, 3 or 5
+    by convention, 1 is included.
+    """
     bases = [2, 3, 5]
     normal_number_counter = 1
     ugly_number_counter = 0
     current_ugly = 0
     while ugly_number_counter < n:
-        print('STATUS: normal_number_counter: {}, ugly_number_counter: {}, current_ugly: {}'.format(
-                normal_number_counter, ugly_number_counter, current_ugly))
         _ = normal_number_counter
         for base in bases:
             _ = check_base(_, base)
@@ -26,5 +32,4 @@ def ugly_number(n):
 
 # test
 n = 150
-print('testing with {}'.format(n))
-print(ugly_number(n))
+print(f'the {n}th ugly number is: {ugly_number(n)}')

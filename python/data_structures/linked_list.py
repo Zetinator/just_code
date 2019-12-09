@@ -89,3 +89,12 @@ class LinkedList():
             print(f'{current_node.value}', end=' -> ')
             current_node = current_node.next
         print('null')
+
+    def __repr__(self):
+        current_node = self.head
+        ans = []
+        while current_node:
+            ans.append(f'{current_node.value} -> ')
+            current_node = current_node.next
+        ans.append('null')
+        return ''.join(ans)

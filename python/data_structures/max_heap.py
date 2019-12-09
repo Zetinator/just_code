@@ -55,3 +55,9 @@ class Heap():
             _[i], _[max_child] = _[max_child], _[i]
             i = max_child
         return maximum
+
+    def __len__(self):
+        return len(self._)
+
+    def __repr__(self):
+        return str(self._)

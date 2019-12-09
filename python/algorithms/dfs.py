@@ -1,10 +1,10 @@
 """implementation of the depth first search algorithm
+https://www.youtube.com/watch?v=AfSk24UTFS8
 https://en.wikipedia.org/wiki/Graph_traversal#Depth-first_search
 """
 from data_structures import graph
 
 # global variables:
-visited = set()
 parents = {}
 
 def retrieve_path(parents: dict, end):
@@ -20,21 +20,15 @@ def dfs(graph: graph.Graph, start, end) -> list:
     """returns the first path found from the start node to the end node
     """
     # set-up
-    visited.clear()
     parents.clear()
     parents[start] = None
     def r(graph, current_node, end):
-        visited.add(current_node)
-        # get nodes to visit
-        neighbors = graph.neighbors(current_node)
-        for node in neighbors:
-            # no-revisiting
-            if node in visited: continue
-            print(f'visiting {current_node} --> {node}')
-            parents[node] = current_node
-            if node == end: return print(retrieve_path(parents, end))
-            r(graph, node, end)
-        return
+        for node in graph.neighbors(current_node):
+            if node not in parents:
+                print(f'visiting {current_node} --> {node}')
+                parents[node] = current_node
+                if node == end: return print(retrieve_path(parents, end))
+                return r(graph, node, end)
     return r(graph, start, end)
 
 # test

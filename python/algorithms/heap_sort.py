@@ -4,8 +4,8 @@ heapify functional aproach, with creation in O(N)
 https://en.wikipedia.org/wiki/Heapsort
 """
 def sift_d(x, i):
-    i_left = lambda: i<<1 + 1
-    i_right = lambda: i<<1 + 2
+    i_left = lambda: i*2 + 1
+    i_right = lambda: i*2 + 2
     while (i_left() < len(x) and x[i_left()] > x[i]) or \
           (i_right() < len(x) and x[i_right()] > x[i]):
         max_child = i_left()

@@ -45,7 +45,3 @@ class Stack():
         tmp = self.head
         self.head = self.head.next
         return tmp
-        
-# test
-test = Stack(range(10))
-print(f'test:')

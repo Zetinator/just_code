@@ -12,8 +12,17 @@ the ADT contains the following methods:
 class Graph():
     def __init__(self, from_dictionary=None):
         self.inner = from_dictionary
+        self.nodes = []
         self.edges = set()
         self.generate_edges()
+        self.generate_nodes()
+
+    def generate_nodes(self):
+        """generates a list of all the nodes between nodes
+        """
+        if not self.inner: return
+        for node, neighbors in self.inner.items():
+            self.nodes.append(node)
 
     def generate_edges(self):
         """generates a list of all the edges between nodes

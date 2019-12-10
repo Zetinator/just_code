@@ -17,7 +17,6 @@ def tsp(graph):
         # already visited with less effort, skip...
         if min_states[state] <= c_distance: return (float('inf'),)
         min_states[state] = c_distance
-        print(f'node: {c_node}, state: {bin(state)}, d: {c_distance}')
         # all visited --> return to start
         if state == possible_states:
             total_d = c_distance+graph.weight(c_node, start)
@@ -37,10 +36,12 @@ def tsp(graph):
         res_srcs.append(r(start, start, state, 0))
     min_distance, *path = min(res_srcs)
     path.reverse()
-    print(f'all cities visited following: {path}, in {min_distance}')
+    print(f'min path found: {path}, in {min_distance}')
     return path
 
-# test
+# test with the graph from:
+# https://visualgo.net/en/tsp
+
 d_matrix = [[0, 24, 13, 13, 22],
             [24, 0, 22, 13, 13],
             [13, 22, 0, 19, 14],

@@ -4,9 +4,9 @@ https://en.wikipedia.org/wiki/Graph_traversal#Depth-first_search
 """
 from data_structures import graph
 
-# global variables:
-
 def retrieve_path(parents: dict, end):
+    """returns the path from start to the given end
+    """
     path = [end]
     current_node = end
     while parents[current_node] != None:
@@ -32,13 +32,3 @@ def dfs(graph: graph.Graph, start, end) -> list:
         return found
     if not r(graph, start): raise ValueError(f'node: {end} not reachable from node: {start}')
     return retrieve_path(parents, end)
-
-# test
-g = { "a" : ["c"],
-          "b" : ["c", "e"],
-          "c" : ["a", "b", "d", "e"],
-          "d" : ["c"],
-          "e" : ["c", "b"],
-          "f" : []
-        }
-g = graph.Graph(g)

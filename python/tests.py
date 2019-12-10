@@ -2,56 +2,6 @@ import unittest
 from data_structures import *
 from algorithms import *
 
-class TestDataAlgorithms(unittest.TestCase):
-    def test_binary_search(self):
-        test = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(bs(test, 11), 2)
-    def test_bubble_sort(self):
-        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
-        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(bubble_sort(test), ans)
-    def test_selection_sort(self):
-        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
-        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(selection_sort(test), ans)
-    def test_insertion_sort(self):
-        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
-        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(insertion_sort(test), ans)
-    def test_merge_sort(self):
-        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
-        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(merge_sort(test), ans)
-    def test_quick_sort(self):
-        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
-        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(quick_sort(test), ans)
-    def test_random_quick_sort(self):
-        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
-        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(r_quick_sort(test), ans)
-    def test_heap_sort(self):
-        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
-        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(heap_sort(test), ans)
-    def test_quick_select(self):
-        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
-        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(quick_select(test, 8), 27)
-    def test_boyer_moore(self):
-        pattern = 'marion'
-        text = "erick quiere a marion, aunque marion ya no nos hable :("
-        self.assertEqual(boyer_moore(pattern, text), 15)
-    def test_dfs(self):
-        g = { "a" : ["c"],
-                  "b" : ["c", "e"],
-                  "c" : ["a", "b", "d", "e"],
-                  "d" : ["c"],
-                  "e" : ["c", "b"],
-                  "f" : []
-                }
-        g = graph.Graph(g)
-        self.assertEqual(dfs(g, 'a', 'b'), ['a', 'c', 'b'])
 
 class TestDataStructures(unittest.TestCase):
     def test_avl(self):
@@ -116,6 +66,68 @@ class TestDataStructures(unittest.TestCase):
                 }
         graph = WGraph(graph)
         self.assertEqual(graph.neighbors(2), [(4, 4)])
+
+class TestDataAlgorithms(unittest.TestCase):
+    def test_binary_search(self):
+        test = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
+        self.assertEqual(bs(test, 11), 2)
+    def test_bubble_sort(self):
+        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
+        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
+        self.assertEqual(bubble_sort(test), ans)
+    def test_selection_sort(self):
+        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
+        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
+        self.assertEqual(selection_sort(test), ans)
+    def test_insertion_sort(self):
+        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
+        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
+        self.assertEqual(insertion_sort(test), ans)
+    def test_merge_sort(self):
+        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
+        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
+        self.assertEqual(merge_sort(test), ans)
+    def test_quick_sort(self):
+        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
+        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
+        self.assertEqual(quick_sort(test), ans)
+    def test_random_quick_sort(self):
+        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
+        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
+        self.assertEqual(r_quick_sort(test), ans)
+    def test_heap_sort(self):
+        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
+        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
+        self.assertEqual(heap_sort(test), ans)
+    def test_quick_select(self):
+        test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
+        ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
+        self.assertEqual(quick_select(test, 8), 27)
+    def test_boyer_moore(self):
+        pattern = 'marion'
+        text = "erick quiere a marion, aunque marion ya no nos hable :("
+        self.assertEqual(boyer_moore(pattern, text), 15)
+    def test_dfs(self):
+        g = { "a" : ["c"],
+                  "b" : ["c", "e"],
+                  "c" : ["a", "b", "d", "e"],
+                  "d" : ["c"],
+                  "e" : ["c", "b"],
+                  "f" : []
+                }
+        g = graph.Graph(g)
+        self.assertEqual(dfs(g, 'a', 'b'), ['a', 'c', 'b'])
+
+    def test_bfs(self):
+        g = { "a" : ["c"],
+                  "b" : ["c", "e"],
+                  "c" : ["a", "b", "d", "e"],
+                  "d" : ["c"],
+                  "e" : ["c", "b"],
+                  "f" : []
+                }
+        g = graph.Graph(g)
+        self.assertEqual(bfs(g, 'a', 'e'), ['a', 'c', 'e'])
 
 if __name__ == '__main__':
     unittest.main()

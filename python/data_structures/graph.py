@@ -35,31 +35,31 @@ class Graph():
     def adjacent(self, x, y):
         """returns True if the two give nodes are adjacent, false otherwise
         """
-        if not x or not y: return False
+        if x == None or y == None: return False
         return (x, y) in self.edges
 
     def neighbors(self, x):
         """returns a list of the neighbors of the given node
         """
-        if not x or x not in self.inner: return []
+        if x == None or x not in self.inner: return []
         return [neighbor for neighbor in self.inner[x]]
             
     def add_node(self, x):
         """adds a new node into the graph
         """
-        if not x: return
+        if x == None: return
         self.inner.setdefault(x, [])
         
     def remove_node(self, x):
         """removes the given node from the graph
         """
-        if not x or x not in self.inner: return
+        if x == None or x not in self.inner: return
         del(self.inner[x])
 
     def add_edge(self, x, y):
         """adds a new edge between the given nodes in the graph
         """
-        if not x or not y: return
+        if x == None or not y: return
         self.edges.add((x, y))
 
     def remove_edge(self, x, y):

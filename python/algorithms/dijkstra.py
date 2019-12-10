@@ -40,12 +40,3 @@ def dijkstra(graph: wgraph.WGraph, start, end) -> list:
                 parents[neighbor] = current_node
         del(q[current_node])
     raise ValueError(f'node: {end} not reachable from node: {start}')
-
-graph = {0: [(1, 1),(2, 7)],
-          1 : [(3, 9), (5, 15)],
-          2 : [(4, 4)],
-          3 : [(4, 10), (5, 5)],
-          4 : [(5, 3)],
-          5 : []
-        }
-graph = wgraph.WGraph(graph)

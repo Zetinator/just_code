@@ -40,12 +40,3 @@ def bfs(graph: graph.Graph, start, end) -> list:
         front = _next
         n += 1
     raise ValueError(f'node: {end} not reachable from node: {start}')
-# test
-g = { "a" : ["c"],
-          "b" : ["c", "e"],
-          "c" : ["a", "b", "d", "e"],
-          "d" : ["c"],
-          "e" : ["c", "b"],
-          "f" : []
-        }
-g = graph.Graph(g)

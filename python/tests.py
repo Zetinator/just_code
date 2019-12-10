@@ -45,6 +45,10 @@ class TestDataStructures(unittest.TestCase):
         trie = Trie(keys)
         self.assertEqual(trie.search('marion'), 'marion')
 
+    def test_bitmask(self):
+        state = 63
+        self.assertEqual(reset(state, 3), 55)
+
     def test_graph(self):
         graph = { "a" : ["c"],
                   "b" : ["c", "e"],
@@ -65,7 +69,7 @@ class TestDataStructures(unittest.TestCase):
                   5 : []
                 }
         graph = WGraph(graph)
-        self.assertEqual(graph.neighbors(2), [(4, 4)])
+        self.assertEqual(graph.neighbors(2), [4])
 
 class TestDataAlgorithms(unittest.TestCase):
     def test_binary_search(self):
@@ -128,6 +132,28 @@ class TestDataAlgorithms(unittest.TestCase):
                 }
         g = graph.Graph(g)
         self.assertEqual(bfs(g, 'a', 'e'), ['a', 'c', 'e'])
+
+    def test_dijkstra(self):
+        graph = {0: [(1, 1),(2, 7)],
+                  1 : [(3, 9), (5, 15)],
+                  2 : [(4, 4)],
+                  3 : [(4, 10), (5, 5)],
+                  4 : [(5, 3)],
+                  5 : []
+                }
+        graph = WGraph(graph)
+        self.assertEqual(dijkstra(graph, 0, 5), [0, 2, 4, 5])
+
+    def test_sssp_dp(self):
+        graph = {0: [(1, 1),(2, 7)],
+                  1 : [(3, 9), (5, 15)],
+                  2 : [(4, 4)],
+                  3 : [(4, 10), (5, 5)],
+                  4 : [(5, 3)],
+                  5 : []
+                }
+        graph = WGraph(graph)
+        self.assertEqual(sssp_dp(graph, 0, 5), [0, 2, 4, 5])
 
 if __name__ == '__main__':
     unittest.main()

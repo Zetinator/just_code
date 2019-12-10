@@ -9,3 +9,4 @@ from .stack import Stack
 from .trie import Trie
 from .graph import Graph
 from .wgraph import WGraph
+from .bit_mask import *

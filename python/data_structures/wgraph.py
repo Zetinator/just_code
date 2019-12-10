@@ -23,6 +23,15 @@ class WGraph():
         """generates a list of all the nodes between nodes
         """
         if not self.inner: return
+        # build from matrix
+        if not type(self.inner) == dict:
+            tmp = {}
+            for i, row in enumerate(self.inner):
+                for j, e in enumerate(row):
+                    tmp.setdefault(i, []).append((j,e))
+            self.inner = tmp
+
+        # normal build
         for node, neighbors in self.inner.items():
             self.nodes.append(node)
 

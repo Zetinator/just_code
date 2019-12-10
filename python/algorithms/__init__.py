@@ -10,3 +10,5 @@ from .quick_select import quick_select
 from .boyer_moore import boyer_moore
 from .dfs import dfs
 from .bfs import bfs
+from .dijkstra import dijkstra
+from .sssp_dp import sssp_dp

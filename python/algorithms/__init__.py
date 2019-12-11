@@ -12,3 +12,4 @@ from .dfs import dfs
 from .bfs import bfs
 from .dijkstra import dijkstra
 from .sssp_dp import sssp_dp
+from .prim import prim

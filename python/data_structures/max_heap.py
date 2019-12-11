@@ -1,11 +1,10 @@
-"""custom implementation of a self heap tree with the purpose of practice
+"""custom implementation of a max heap tree with the purpose of practice
 the ADT contains the following methods:
     - push
     - peek
     - pop
 """
 class Heap():
-
     def __init__(self, x=None):
         self._ = []
         if x:
@@ -14,7 +13,10 @@ class Heap():
 
     def push(self, x):
         """push a new element into the heap
+        can also push tuples with the priority as the first element :)
         """
+        # special case: push None element
+        if not x: return
         # auxiliar function to compute the parent index
         parent = lambda i: max((i-1)//2, 0)
         _ = self._  # alias because i am lazy to write
@@ -44,15 +46,16 @@ class Heap():
         # swap max <-> last
         _[0], _[-1] = _[-1], _[0]
         maximum = _.pop()
-        left = lambda i: i<<1 + 1
-        right = lambda i: i<<1 + 2
+        # sift down
         i = 0
-        while (left(i) < len(_) and _[left(i)] > _[i]) or \
-               (right(i) < len(_) and _[right(i)] > _[i]):
-            max_child = left(i)
-            if right(i) < len(_) and _[left(i)] < _[right(i)]:
-                max_child = right(i)
-            _[i], _[max_child] = _[max_child], _[i]
+        i_left = lambda: i*2 + 1
+        i_right = lambda: i*2 + 2
+        while (i_left() < len(_) and _[i_left()] > _[i]) or \
+              (i_right() < len(_) and _[i_right()] > _[i]):
+            max_child = i_left()
+            if i_right() < len(_) and _[i_right()] > _[i_left()]:
+                max_child = i_right()
+            _[i], _[max_child] = _[max_child], _[i]  # swap
             i = max_child
         return maximum
 

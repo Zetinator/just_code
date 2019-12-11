@@ -17,12 +17,14 @@ class RMedian():
         # special case: min heap empyty
         if not self.min_heap._:
             self.min_heap.push(-v)
+            self.median = v
             return
         if v < -self.min_heap.peek():
             self.max_heap.push(v)
         else:
             self.min_heap.push(-v)
         self.rebalance()
+        print(f'min: {self.min_heap}, max: {self.max_heap}')
 
     def rebalance(self):
         # rebalance depending on who is bigger
@@ -40,4 +42,6 @@ class RMedian():
 test = [3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]
 print(f'testing with: {test}')
 foo = RMedian()
-for e in test: foo.push(e)
+for e in test:
+    foo.push(e)
+    print(f'pushed: {e}, current_median: {foo.median}')

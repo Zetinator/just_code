@@ -154,6 +154,16 @@ class TestDataAlgorithms(unittest.TestCase):
                 }
         graph = WGraph(graph)
         self.assertEqual(sssp_dp(graph, 0, 5), [0, 2, 4, 5])
+    def test_prim(self):
+        graph = {0: [(1, 9),(2, 75)],
+                  1 : [(0, 9), (2, 95), (3, 19), (4, 15)],
+                  2 : [(0, 75), (1,95), (3, 51)],
+                  3 : [(1, 19), (2, 51), (4, 31)],
+                  4 : [(1, 42),(3, 31)],
+                }
+        graph = WGraph(graph)
+        self.assertEqual(prim(graph), {(0, 1), (3, 2), (1, 3), (3, 4)})
+
 
 if __name__ == '__main__':
     unittest.main()

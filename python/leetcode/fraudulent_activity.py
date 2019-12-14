@@ -21,16 +21,16 @@ def activityNotifications(expenditure, d):
 
 # the code is not executing between the time limits
 
-def get_median(x, d):
+def get_median(v, d):
     m = d//2+1
     i, counter = 0, 0
     c_median = 0
-    while counter <= m:
+    while counter < m:
         prev_median, c_median = c_median, i
-        for e in range(x[i]):
+        for e in range(v[i]):
             counter += 1
             print(f'prev: {prev_median}, current_median: {c_median}, counter: {counter}, m: {m}')
-            if counter == m: return c_median if d%2 == 1 else (prev_median+c_median)/2
+            if counter == m: break
         i += 1
     return c_median if d%2 == 1 else (prev_median+c_median)/2
 
@@ -49,10 +49,8 @@ def activityNotifications(expenditure, d):
         print(f'median: {median}, next: {expenditure[i]}')
         if expenditure[i] >= 2*median: notifications += 1
         # push new expenditure[i]
-        print(f'pushing: {expenditure[i]}')
         v[expenditure[i]] += 1
         # pop oldest element
-        print(f'popping: {expenditure[i-d]}')
         v[expenditure[i-d]] -= 1
     return notifications
 

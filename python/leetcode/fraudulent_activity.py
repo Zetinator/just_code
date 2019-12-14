@@ -22,17 +22,18 @@ def activityNotifications(expenditure, d):
 # the code is not executing between the time limits
 
 def get_median(v, d):
-    m = d//2+1
-    i, counter = 0, 0
-    c_median = 0
-    while counter < m:
-        prev_median, c_median = c_median, i
-        for e in range(v[i]):
-            counter += 1
-            print(f'prev: {prev_median}, current_median: {c_median}, counter: {counter}, m: {m}')
-            if counter == m: break
-        i += 1
-    return c_median if d%2 == 1 else (prev_median+c_median)/2
+    m = d//2
+    counter = 0
+    prev_median, current_median = None, None
+    # count until the half of the given window
+    for i, e in enumerate(v):
+        counter += e
+        if counter >= m and prev_median is None: prev_median = i
+        if counter >= m+1:
+            current_median = i
+            break
+    # is it even?
+    return current_median if d%2 == 1 else (prev_median+current_median)/2
 
 
 def activityNotifications(expenditure, d):
@@ -46,7 +47,6 @@ def activityNotifications(expenditure, d):
     for i in range(d, len(expenditure)):
         # compare current element with the current median
         median = get_median(v, d)
-        print(f'median: {median}, next: {expenditure[i]}')
         if expenditure[i] >= 2*median: notifications += 1
         # push new expenditure[i]
         v[expenditure[i]] += 1

@@ -28,28 +28,15 @@ def commonChild(s1, s2):
         return max(recurse(l, r+1, max_child), recurse(l+1, r, max_child))
     return recurse(0, 0)
 
-def commonChild(X, Y):
-    # find the length of the strings
-    m = len(X)
-    n = len(Y)
-
-    # declaring the array for storing the dp values
-    L = [[None]*(n+1) for i in range(m+1)]
-
-    """Following steps build L[m+1][n+1] in bottom up fashion
-    Note: L[i][j] contains length of LCS of X[0..i-1]
-    and Y[0..j-1]"""
-    for i in range(m+1):
-        for j in range(n+1):
-            if i == 0 or j == 0 :
-                L[i][j] = 0
-            elif X[i-1] == Y[j-1]:
-                L[i][j] = L[i-1][j-1]+1
+def commonChild(s1, s2):
+    table = [[0]*(len(s1)+1) for _ in range(len(s2)+1)]
+    for i in range(1, len(s1)+1):
+        for j in range(1, len(s2)+1):
+            if s1[i-1] == s2[j-1]:
+                table[i][j] = table[i-1][j-1]+1
             else:
-                L[i][j] = max(L[i-1][j] , L[i][j-1])
-
-    # L[m][n] contains the length of LCS of X[0..n-1] & Y[0..m-1]
-    return L
+                table[i][j] = max(table[i-1][j] , table[i][j-1])
+    return table[i][j]
 
 
 
@@ -58,6 +45,6 @@ a = 'SHINCHAN'
 b = 'NOHARAAA'
 print(f'testing with: a:{a}, b:{b}')
 l = commonChild(a,b)
-for e in l: print(e)
-# print(f'ans: {commonChild(a, b)}')
+# for e in l: print(e)
+print(f'ans: {commonChild(a, b)}')
 

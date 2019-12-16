@@ -29,6 +29,8 @@ def commonChild(s1, s2):
     return recurse(0, 0)
 
 def commonChild(s1, s2):
+    """botton-up approach, classic
+    """
     table = [[0]*(len(s1)+1) for _ in range(len(s2)+1)]
     for i in range(1, len(s1)+1):
         for j in range(1, len(s2)+1):
@@ -38,13 +40,25 @@ def commonChild(s1, s2):
                 table[i][j] = max(table[i-1][j] , table[i][j-1])
     return table[i][j]
 
-
+def commonChild(s1, s2):
+    """bottom-up approach memory efficient
+    uses just a row and the last column value
+    """
+    last_row = [0]*(len(s1)+1)
+    for i in range(1, len(s1)+1):
+        current = [0]
+        for j in range(1, len(s2)+1):
+            if s1[i-1] == s2[j-1]:
+                current.append(last_row[j-1]+1)
+            else:
+                current.append(max(last_row[j] , current[-1]))
+        last_row = current
+    return last_row[-1]
 
 # test
 a = 'SHINCHAN'
 b = 'NOHARAAA'
 print(f'testing with: a:{a}, b:{b}')
 l = commonChild(a,b)
-# for e in l: print(e)
 print(f'ans: {commonChild(a, b)}')
 

@@ -122,3 +122,30 @@ class BST():
                 return deep(v, current_node, current_node.right, 1)
         if not deep(v, None, self.root): raise KeyError(f'{v} is not in the tree, nothing to remove')
         return True
+
+    def build_from_array(self, indexes):
+        root = self.root
+        def build(node, i, indexes, level=0):
+            # aux functions
+            left = lambda: i*2 +1
+            right = lambda: i*2 +2
+            # actual tree traversal
+            if left() < len(indexes) and indexes[left()] != -1:
+                left_node = Node(indexes[left()])
+                node.left = left_node
+                build(left_node, left(), indexes, level+1)
+            if right() < len(indexes) and indexes[right()] != -1:
+                right_node = Node(indexes[right()])
+                node.right = right_node
+                build(right_node, right(), indexes, level+1)
+        build(root, 0, indexes, 0)
+        return root
+
+    def traverse_array(self, indexes):
+        def deep(i, indexes, level=0):
+            left = lambda: i*2 +1
+            right = lambda: i*2 +2
+            if left() < len(indexes): deep(left(), indexes, level+1)
+            if indexes[i] != -1: print('\t'*level, f'-->({indexes[i]})')
+            if right() < len(indexes): deep(right(), indexes, level+1)
+        return deep(0, indexes, level=0)

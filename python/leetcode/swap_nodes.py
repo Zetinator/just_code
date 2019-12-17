@@ -6,6 +6,8 @@ swapNodes has the following parameter(s):
 - indexes: an array of integers representing index values of each , beginning with , the first element, as the root.
 - queries: an array of integers, each representing a  value.
 """
+from collections import deque
+
 class Node():
     def __init__(self, index):
         self.index = index
@@ -18,35 +20,31 @@ def swap(root, t):
     def deep(current_node, level, t):
         if not current_node: return
         deep(current_node.left, level+1, t)
-        if level == t-1:
-            current_node.left, current_node.right = current_node.right, current_node.left
         deep(current_node.right, level+1, t)
+        if (level+1)%t == 0:
+            # post traversal... because if we make the swap and then recurse weird stuff happens
+            # print(f'swaping at {current_node.index}, {current_node.left} <-> {current_node.right}')
+            current_node.left, current_node.right = current_node.right, current_node.left
     return deep(root, level=0, t=t)
 
 def build_tree(indexes):
     """build tree from an array of values
     """
     root = Node(1)
-    def build(node, i, indexes, level=0):
-        # aux functions
-        left = lambda: i*2 +1
-        right = lambda: i*2 +2
-        # actual tree traversal
-        if left() < len(indexes) and indexes[left()] != -1:
-            left_node = Node(indexes[left()])
-            node.left = left_node
-            build(left_node, left(), indexes, level+1)
-        if right() < len(indexes) and indexes[right()] != -1:
-            right_node = Node(indexes[right()])
-            node.right = right_node
-            build(right_node, right(), indexes, level+1)
-    build(root, 0, indexes, 0)
+    queue = deque()
+    queue.append(root)
+    for i_l, i_r in indexes:
+        node = queue.popleft()
+        if i_l != -1:
+            node.left = Node(i_l)
+            queue.append(node.left)
+        if i_r != -1:
+            node.right = Node(i_r)
+            queue.append(node.right)
     return root
 
 def swapNodes(indexes, queries):
-    # flatten and add root
-    indexes = [1] + [index for sublist in indexes for index in sublist]
-    print(f'indexes: {indexes}')
+    # print(f'indexes: {indexes}')
     # with the complete binary tree representation we can do the operations...
     root = build_tree(indexes)
     # auxiliar method to traverse the tree
@@ -57,17 +55,16 @@ def swapNodes(indexes, queries):
         def deep(current_node, level):
             if not current_node: return
             deep(current_node.left, level+1)
-            print('\t'*level, f'-->({current_node.index})')
-            # res.append(current_node.index)
+            # print('\t'*level, f'-->({current_node.index})')
+            res.append(current_node.index)
             deep(current_node.right, level+1)
         return deep(root, level=0)
     # do the swaps
     output = []
     for q in queries:
         res = []
-        traverse(root)
+        # traverse(root)
         swap(root, q)
-        print(f'--------------------------------------------')
         traverse(root)
         output.append(res)
     return output

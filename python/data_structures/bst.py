@@ -64,8 +64,15 @@ class BST():
         return deep(self.root, level=0)
     
     def __repr__(self):
-        self.traverse()
-        return f'{self.__dict__}:'
+        ans = []
+        def deep(current_node, level):
+            if not current_node: return
+            deep(current_node.left, level+1)
+            ans.append('\t'*level)
+            ans.append(f'-->({current_node.value})\n')
+            deep(current_node.right, level+1)
+        deep(self.root, level=0)
+        return ''.join(ans)
     
     def retrieve_successor(self, node):
         # first some pruning

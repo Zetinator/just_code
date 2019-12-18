@@ -7,30 +7,35 @@ swapNodes has the following parameter(s):
 - queries: an array of integers, each representing a  value.
 """
 from collections import deque
+import sys
+sys.setrecursionlimit(3000)
 
 class Node():
+    """standard node implementation
+    """
     def __init__(self, index):
         self.index = index
         self.left = None
         self.right = None
 
-def swap(root, t):
-    """swap nodes at level t
+def swap(root, swap_at):
+    """swap nodes at every level%swap_at == 0
     """
-    def deep(current_node, level, t):
+    # standard post traversal... 
+    # because if we make the swap and then recurse weird stuff happens
+    def deep(current_node, level, swap_at):
         if not current_node: return
-        deep(current_node.left, level+1, t)
-        deep(current_node.right, level+1, t)
-        if (level+1)%t == 0:
-            # post traversal... because if we make the swap and then recurse weird stuff happens
-            # print(f'swaping at {current_node.index}, {current_node.left} <-> {current_node.right}')
+        deep(current_node.left, level+1, swap_at)
+        deep(current_node.right, level+1, swap_at)
+        if (level+1)%swap_at == 0:
             current_node.left, current_node.right = current_node.right, current_node.left
-    return deep(root, level=0, t=t)
+    return deep(root, level=0, swap_at=swap_at)
 
 def build_tree(indexes):
-    """build tree from an array of values
+    """build tree from an array of indexes
     """
     root = Node(1)
+    # we start with the root and traverse using standard BFS
     queue = deque()
     queue.append(root)
     for i_l, i_r in indexes:
@@ -44,29 +49,26 @@ def build_tree(indexes):
     return root
 
 def swapNodes(indexes, queries):
-    # print(f'indexes: {indexes}')
-    # with the complete binary tree representation we can do the operations...
+    """main method...
+    """
+    # we build the tree, from the given list of indexes
     root = build_tree(indexes)
-    # auxiliar method to traverse the tree
-    res = []
+    # standard method to traverse the tree (in-order)
     def traverse(root):
-        """traverse the tree
-        """
+        res = []
         def deep(current_node, level):
             if not current_node: return
             deep(current_node.left, level+1)
-            # print('\t'*level, f'-->({current_node.index})')
             res.append(current_node.index)
             deep(current_node.right, level+1)
-        return deep(root, level=0)
-    # do the swaps
+        deep(root, level=0)
+        return res
+    # do the swaps, and keep the global result here in 'output'
     output = []
     for q in queries:
-        res = []
-        # traverse(root)
+        # in 'res' we keep the result of every swap operation
         swap(root, q)
-        traverse(root)
-        output.append(res)
+        output.append(traverse(root))
     return output
 
 # test
@@ -88,6 +90,6 @@ indexes = [[2, 3],
         [-1, -1],
         [-1, -1]]
 
-queries = [2]
+queries = [2, 4]
 print(f'testing with: {indexes}')
 print(f'ans: {swapNodes(indexes, queries)}')

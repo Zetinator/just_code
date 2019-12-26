@@ -16,7 +16,6 @@ class Graph():
         self.machines = set(machines)
         self.edges = dict()
         self.weights = dict()
-        self.total_w = 0
         self.build_graph(edges)
 
     def build_graph(self, edges):
@@ -26,8 +25,6 @@ class Graph():
             # will be bidirectional...
             self.edges.setdefault(c_1, []).append(c_2)
             self.edges.setdefault(c_2, []).append(c_1)
-            # weights
-            self.total_w += weight
             self.weights[(c_1, c_2)] = weight
 
     def has_machine(self, node):
@@ -93,38 +90,41 @@ def minTime(roads, machines):
     """trying modified prim's algorithm
     instead of the min spanning tree is the max spanning tree
     and we allow just one city with a machine in the max spanning tree
-
-    the algorithm is not correct...
     """
     # set-up
     graph = Graph(roads, machines)
-    minTime.mst = 0
+    minTime.cut_edges = 0
     nodes = set()
     def prim(start):
         # get first frontier
         q = Heap([(graph.weight(start, node), node, start) for node in graph.neighbors(start)])
         machine_flag = graph.has_machine(start)
         nodes.add(start)
+        print(f'start: {start}')
         while q:
             weight, current_node, parent = q.pop()
             # no revisiting
             if current_node in nodes: continue
             nodes.add(current_node)
             # no double machines
-            if machine_flag and graph.has_machine(current_node): continue
+            if machine_flag and graph.has_machine(current_node):
+                minTime.cut_edges += graph.weight(parent, current_node)
+                print(f'cutting edge: {(parent, current_node)} -> {minTime.cut_edges}')
+                continue
+            print(f'visiting: {current_node}, from: {parent}, machine_flag: {machine_flag}')
             # only one machine allowed
-            if not machine_flag and graph.has_machine(current_node): machine_flag = True
-            minTime.mst += graph.weight(parent, current_node)
-            print(f'start: {start}, visiting: {current_node}, from: {parent}, flag: {machine_flag}')
+            if not machine_flag and graph.has_machine(current_node):
+                print(f'machine allowed: {current_node}')
+                machine_flag = True
             for neighbor in graph.neighbors(current_node):
                 q.push((graph.weight(current_node,neighbor), neighbor, current_node))
+        print(f'remaining nodes: {len(nodes)}: {nodes}')
     # do not start with a machine...
-    to_try = list(graph.nodes-set(machines))
+    to_try = list(graph.nodes-set(graph.machines))
     for start in to_try:
+        if len(nodes) == len(graph.nodes): break
         prim(start)
-    res = graph.total_w - minTime.mst
-    print(f'max_span: {minTime.mst}, total: {graph.total_w}, remaining: {res}')
-    return res
+    return minTime.cut_edges
 
 def minTime(roads, machines):
     """kruskal algorithm
@@ -159,141 +159,142 @@ machines = [2,4,0]
 
 roads = [[0,1,4],
         [1,2,3],
+        [5,2,8],
         [1,3,7],
         [0,4,2]]
 machines = [2,3,4]
 
-machines = """1
-95
-90
-11
-48
-49
-23
-6
-0
-76
-3
-83
-85
-31
-44
-54
-87
-38
-16
-61
-22
-21
-29""".split('\n')
-machines = [int(n) for n in machines]
-roads ="""9 78 35
-9 54 45
-78 69 27
-9 55 9
-9 1 78
-1 92 7
-55 42 57
-1 84 4
-1 5 38
-92 8 75
-55 30 99
-69 7 9
-1 81 45
-8 31 4
-42 23 100
-78 95 3
-54 14 14
-84 53 80
-92 32 8
-42 86 40
-1 64 93
-78 60 65
-64 76 24
-42 89 86
-7 28 48
-69 62 26
-1 40 23
-78 38 29
-8 44 39
-78 3 37
-54 26 17
-62 50 24
-76 66 37
-30 51 75
-86 43 91
-5 77 32
-64 91 11
-14 10 36
-26 20 19
-9 52 50
-77 94 32
-44 67 63
-64 15 61
-92 0 73
-10 37 23
-89 2 37
-92 18 51
-26 47 25
-30 87 15
-47 36 35
-92 72 16
-28 75 93
-78 73 66
-20 19 64
-73 57 1
-91 6 50
-54 33 41
-78 11 38
-37 71 55
-5 63 52
-10 46 22
-94 82 19
-95 83 51
-57 90 10
-63 58 94
-43 45 23
-72 68 62
-82 85 88
-58 4 94
-82 41 62
-3 22 68
-54 70 78
-31 74 27
-36 29 61
-33 24 76
-40 35 61
-83 79 51
-8 59 20
-45 34 26
-38 12 18
-70 99 25
-40 80 81
-31 97 58
-69 21 16
-83 13 22
-80 48 49
-97 65 44
-74 17 1
-68 16 92
-50 98 54
-94 27 76
-81 61 67
-85 49 96
-81 93 31
-22 25 67
-57 96 93
-82 88 92
-86 56 80
-25 39 44""".split('\n')
-roads_pp= []
-for line in roads: 
-    l = []
-    for n in line.split():
-        l.append(int(n))
-    roads_pp.append(l)
+# machines = """1
+# 95
+# 90
+# 11
+# 48
+# 49
+# 23
+# 6
+# 0
+# 76
+# 3
+# 83
+# 85
+# 31
+# 44
+# 54
+# 87
+# 38
+# 16
+# 61
+# 22
+# 21
+# 29""".split('\n')
+# machines = [int(n) for n in machines]
+# roads ="""9 78 35
+# 9 54 45
+# 78 69 27
+# 9 55 9
+# 9 1 78
+# 1 92 7
+# 55 42 57
+# 1 84 4
+# 1 5 38
+# 92 8 75
+# 55 30 99
+# 69 7 9
+# 1 81 45
+# 8 31 4
+# 42 23 100
+# 78 95 3
+# 54 14 14
+# 84 53 80
+# 92 32 8
+# 42 86 40
+# 1 64 93
+# 78 60 65
+# 64 76 24
+# 42 89 86
+# 7 28 48
+# 69 62 26
+# 1 40 23
+# 78 38 29
+# 8 44 39
+# 78 3 37
+# 54 26 17
+# 62 50 24
+# 76 66 37
+# 30 51 75
+# 86 43 91
+# 5 77 32
+# 64 91 11
+# 14 10 36
+# 26 20 19
+# 9 52 50
+# 77 94 32
+# 44 67 63
+# 64 15 61
+# 92 0 73
+# 10 37 23
+# 89 2 37
+# 92 18 51
+# 26 47 25
+# 30 87 15
+# 47 36 35
+# 92 72 16
+# 28 75 93
+# 78 73 66
+# 20 19 64
+# 73 57 1
+# 91 6 50
+# 54 33 41
+# 78 11 38
+# 37 71 55
+# 5 63 52
+# 10 46 22
+# 94 82 19
+# 95 83 51
+# 57 90 10
+# 63 58 94
+# 43 45 23
+# 72 68 62
+# 82 85 88
+# 58 4 94
+# 82 41 62
+# 3 22 68
+# 54 70 78
+# 31 74 27
+# 36 29 61
+# 33 24 76
+# 40 35 61
+# 83 79 51
+# 8 59 20
+# 45 34 26
+# 38 12 18
+# 70 99 25
+# 40 80 81
+# 31 97 58
+# 69 21 16
+# 83 13 22
+# 80 48 49
+# 97 65 44
+# 74 17 1
+# 68 16 92
+# 50 98 54
+# 94 27 76
+# 81 61 67
+# 85 49 96
+# 81 93 31
+# 22 25 67
+# 57 96 93
+# 82 88 92
+# 86 56 80
+# 25 39 44""".split('\n')
+# roads_pp= []
+# for line in roads: 
+    # l = []
+    # for n in line.split():
+        # l.append(int(n))
+    # roads_pp.append(l)
 
-# print(f'roads: {roads}')
+print(f'roads: {roads}')
 print(f'machines: {machines}')
-graph = Graph(roads_pp, machines)
-print(f'ans: {minTime(roads_pp, machines)}')
+graph = Graph(roads, machines)
+print(f'ans: {minTime(roads, machines)}')

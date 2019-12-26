@@ -126,6 +126,30 @@ def minTime(roads, machines):
     print(f'max_span: {minTime.mst}, total: {graph.total_w}, remaining: {res}')
     return res
 
+def minTime(roads, machines):
+    """kruskal algorithm
+    with union find disjoint
+    """
+    parents = {}
+    # dp[i] denotes whether or not component with root i had already had a machine
+    dp = dict().fromkeys(range(len(roads)+1), 0)
+    for machine in machines:
+        dp[machine] = 1
+    def find(node):
+        if parents.get(node, node) == node:
+            return node
+        return find(parents[node])
+    def union(c1,c2):
+        x,y = find(c1), find(c2)
+        # if the roots are not a machine
+        if not dp[x] or not dp[y]:
+            if c1 != x : x,y = y,x
+            parents[x] = y
+            dp[x] |= dp[y]
+            dp[y] |= dp[x]
+            return True
+    return sum(w for c1,c2,w in sorted(roads, key=lambda x: -x[2]) if not union(c1,c2))
+
 # test
 roads = [[2, 1, 8],
         [1, 0, 5],

@@ -3,7 +3,6 @@ https://www.youtube.com/watch?v=s-CYnVz-uh4
 https://en.wikipedia.org/wiki/Breadth-first_search
 """
 from data_structures import graph
-from data_structures import queue
 
 def retrieve_path(parents: dict, end):
     """returns the path from start to the given end

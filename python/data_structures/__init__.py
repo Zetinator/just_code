@@ -10,3 +10,4 @@ from .trie import Trie
 from .graph import Graph
 from .wgraph import WGraph
 from .bit_mask import *
+from .disjoint_set import *

@@ -2,49 +2,74 @@
 
 A  Crossword grid is provided to you, along with a set of words (or names of places) which need to be filled into the grid. Cells are marked either + or -. Cells marked with a - are to be filled with the word list.
 """
+#!/bin/python3
 
-def crosswordPuzzle(crossword, words):
-    # preprocessing...
-    words = set(words.split(';'))
-    # min lenght of the words
-    _min = len(min(words))
-    used = set()
-    to_use = lambda: words-used
-    # modifiable copy...
-    cross = crossword[:]
-    def fill_word_row(i):
-        w = max(cross[i].split('+'))
-        if len(w) < _min: return
-        possible_words = [word for word in to_use if len(word) >= len(w)]
-        if not possible_words: return
-        return (i, cross[i].index(w), lenw)
-    def fill_word_column(j):
-        w = max(cross[i].split('+'))
-        if len(w) < _min: return False
-        return (i, cross[i].index(w), lenw)
+import sys
 
-
-    # can we navigate into to this cell?
-    def is_valid(node):
-        i, j = node
-        return (0 <= i < len(cross) and 0 <= j < len(cross) and
-                cross[i][j] != '+')
-    # can we put a word here? 
-    def check_word(node, letter):
-        i, j = node
-        if cross[i][j] != '-': return True
-        if cross[i][j] == letter: return True
-        return False
-    # backtracking...
-    def r(current_node, word=None):
-        """dfs
-        """
-        to_use = words - used
-        if not to_use: return True
-        if not is_valid(current_node): return
-        for move in moves:
-            next_move = moves[move](current_node)
-    return
-
-test = 6
-print(f'ans: {fibonacci(test)}')
+def printBoard(board):
+    for row in board:
+        print(''.join(row))
+    
+def possibleDirections(board,word):
+    length=len(word)
+    for i in range(10):
+        for j in range(10):
+            possible_h = True
+            possible_v = True
+            for k in range(length):
+                # check horizontal
+                if j<10-(length-1):
+                    if board[i][j+k] not in ['-',word[k]]:
+                        possible_h = False
+                # check vertical
+                if i<10-(length-1): 
+                    if board[i+k][j] not in ['-',word[k]]:
+                        possible_v = False
+            if possible_h and j<10-(length-1):
+                yield (i,j,0)
+            if possible_v and i<10-(length-1):
+                yield (i,j,1)    
+            
+def write(board,word,startLocation):
+    """write the possible word
+    """
+    i,j,axis=startLocation
+    length=len(word)
+    if axis == 0:
+        for k in range(length):
+            board[i][j+k]=word[k]
+    else:
+        for k in range(length):
+            board[i+k][j]=word[k]
+            
+def backtrack(board,word,startLocation):
+    """erase words written
+    """
+    i,j,axis=startLocation
+    length=len(word)
+    if axis == 0:
+        for k in range(length):
+            board[i][j+k]='-'
+    else:
+        for k in range(length):
+            board[i+k][j]='-'
+        
+def solve(board,words):
+    if not words:
+        printBoard(board)
+        return 
+    word=words.pop()
+    # solve...
+    for direction in possibleDirections(board,word):
+        write(board,word,direction)
+        solve(board,words)
+        backtrack(board,word,direction)
+    words.append(word)
+    
+if __name__ == '__main__':
+    board = []
+    for _ in range(10):
+        board_item = list(input())
+        board.append(board_item)
+    words = str(input()).split(";")
+    solve(board,words)

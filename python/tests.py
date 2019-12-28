@@ -40,6 +40,15 @@ class TestDataStructures(unittest.TestCase):
         s = Stack(range(10))
         self.assertEqual(s.pop().value, 9)
 
+    def test_djs(self):
+        djs = DJS()
+        djs.union(10, 0)
+        djs.union(11, 1)
+        djs.union(12, 2)
+        djs.union(10, 12)
+        djs.union(11, 10)
+        self.assertTrue(djs.same(11, 12))
+
     def test_trie(self):
         keys  = 'erick quiere mucho a su marion aunque ella ya no nos quiera tanto'.split()
         trie = Trie(keys)

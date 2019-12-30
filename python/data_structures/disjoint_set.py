@@ -36,6 +36,7 @@ class DJS():
         the path compression makes it optimal, without the rank optimization
         """
         root_1, root_2 = self.find(node_1), self.find(node_2)
+        if root_1 == root_2: return
         # add the short to the big
         if node_1 == root_1: self.parents[root_1] = root_2
         else: self.parents[root_2] = root_1

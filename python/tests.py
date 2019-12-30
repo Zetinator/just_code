@@ -52,7 +52,7 @@ class TestDataStructures(unittest.TestCase):
     def test_trie(self):
         keys  = 'erick quiere mucho a su marion aunque ella ya no nos quiera tanto'.split()
         trie = Trie(keys)
-        self.assertEqual(trie.search('marion'), 'marion')
+        self.assertEqual(trie.predict('quie'), ['quiere','quiera'])
 
     def test_bitmask(self):
         state = 63
@@ -172,6 +172,11 @@ class TestDataAlgorithms(unittest.TestCase):
                 }
         graph = WGraph(graph)
         self.assertEqual(prim(graph), {(0, 1), (3, 2), (1, 3), (3, 4)})
+
+    def test_gcd(self):
+        n1 = 99
+        n2 = 33
+        self.assertEqual(gcd(n1, n2), 33)
 
 
 if __name__ == '__main__':

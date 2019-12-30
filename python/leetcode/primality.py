@@ -4,6 +4,9 @@ Complete the primality function in the editor below. It should return Prime if  
 """
 
 def primality(n):
+    """6k + 1 optimizations
+    https://en.wikipedia.org/wiki/Primality_test#Pseudocode
+    """
     if n <= 3: return 'Prime' if n > 1 else 'Not prime'
     if n%2 == 0 or n%3 == 0: return 'Not prime'
     # 6k + 1 optimization 

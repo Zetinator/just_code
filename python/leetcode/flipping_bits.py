@@ -4,4 +4,6 @@ You will be given a list of 32 bit unsigned integers. Flip all the bits ( and ) 
 """
 
 def flippingBits(n):
+    """easy piece...
+    """
     return n^(2**32-1)

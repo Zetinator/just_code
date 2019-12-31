@@ -49,10 +49,15 @@ class TestDataStructures(unittest.TestCase):
         djs.union(11, 10)
         self.assertTrue(djs.same(11, 12))
 
+    def test_radix_trie(self):
+        keys  = 'erick quiere mucho a su marion aunque ella ya no nos quiera tanto'.split()
+        rt = RTrie(keys)
+        self.assertEqual(rt.predict('quier'), ['quiere','quiera'])
+
     def test_trie(self):
         keys  = 'erick quiere mucho a su marion aunque ella ya no nos quiera tanto'.split()
         trie = Trie(keys)
-        self.assertEqual(trie.predict('quie'), ['quiere','quiera'])
+        self.assertEqual(trie.predict('quier'), ['quiere','quiera'])
 
     def test_bitmask(self):
         state = 63

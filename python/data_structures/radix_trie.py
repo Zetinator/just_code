@@ -71,26 +71,69 @@ class RTrie():
             current_node.children.setdefault(key, self.Node()).data = data
         return r(self.root, key)
 
-    def predict(self, word=None):
-        if not word or not self.root.children: return []
-        res = []
-        current_node = self.root
-        for letter in word:
-            if letter in current_node.children:
-                current_node = current_node.children[letter]
-        def deep(node):
-            if node.data != None: return res.append(node.data)
-            for key, data in node.children.items(): deep(data)
-        deep(current_node)
-        return res
+    def predict(self, key=None):
+        """predict all branches of the lowest common ancestor
+        """
+        if not self.root.children: raise ValueError(f'{key} not found')
+        def lcp(key_1, key_2):
+            """largest common prefix
+            """
+            i = 0
+            while i < min(len(key_1),len(key_2)):
+                if key_1[i] != key_2[i]: return i
+                i += 1
+            return i
+        nodes = []
+        def dig(node):
+            """explore all the leafs from the current_node
+            """
+            if node.data != None: nodes.append(f'{node.data}')
+            for k,child in node.children.items(): dig(child)
+        def r(current_node, key):
+            """search recursively the given key
+            """
+            # base case... no children
+            if not key:
+                return dig(current_node)
+            # look for similar roots in the children...
+            for k, child in current_node.children.items():
+                i = lcp(k, key)
+                prefix, suffix, key = k[:i], k[i:], key[i:]
+                if prefix in current_node.children:
+                    # recurse on the shared root
+                    return r(current_node.children[prefix], key)
+            return dig(current_node)
+        r(self.root, key)
+        return nodes
 
     def search(self, key):
-        current_node = self.root
-        for letter in key:
-            if letter not in current_node.children:
-                raise ValueError(f'{key} not found')
-            current_node = current_node.children[letter]
-        return current_node.data
+        """search for a given key in the trie
+        """
+        if not self.root.children: raise ValueError(f'{key} not found')
+        def lcp(key_1, key_2):
+            """largest common prefix
+            """
+            i = 0
+            while i < min(len(key_1),len(key_2)):
+                if key_1[i] != key_2[i]: return i
+                i += 1
+            return i
+        _key = key[:]
+        def r(current_node, key):
+            """search recursively
+            """
+            # base case... no children
+            if not key:
+                return current_node
+            # look for similar roots in the children...
+            for k, child in current_node.children.items():
+                i = lcp(k, key)
+                prefix, suffix, key = k[:i], k[i:], key[i:]
+                if prefix:
+                    # recurse on the shared root
+                    return r(current_node.children[prefix], key)
+            raise ValueError(f'{_key} not found')
+        return r(self.root, key)
 
-keys = 'erick quiere mucho a su marion aunque ella ya no nos quiera...'.split()
+keys  = 'erick quiere mucho a su marion aunque ella ya no nos quiera tanto'.split()
 rt = RTrie(keys)

@@ -7,6 +7,7 @@ from .double_linked_list import DoubleLinkedList
 from .queue import Queue
 from .stack import Stack
 from .trie import Trie
+from .radix_trie import RTrie
 from .graph import Graph
 from .wgraph import WGraph
 from .bit_mask import *

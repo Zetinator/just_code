@@ -20,11 +20,14 @@ class Trie():
 
     def __repr__(self):
         nodes = []
-        def r(node):
-            if node.data != None: nodes.append(str(node.data))
-            for k,child in node.children.items(): r(child)
-        r(self.root)
-        return '\n'.join(nodes)
+        def r(node, level):
+            if node.data != None:
+                nodes.append('\t'*(level-1) + f'({node.data})\n')
+            for k,child in node.children.items():
+                nodes.append('\t'*level + f'--<{k}>--\n')
+                r(child, level+1)
+        r(self.root, 0)
+        return ''.join(nodes)
 
     def insert(self, key):
         """insert a new key

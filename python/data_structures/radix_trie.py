@@ -20,14 +20,17 @@ class RTrie():
 
     def __repr__(self):
         nodes = []
-        def r(node):
-            if node.data != None: nodes.append(str(node.data))
-            for k,child in node.children.items(): r(child)
-        r(self.root)
-        return '\n'.join(nodes)
+        def r(node, level):
+            if node.data != None:
+                nodes.append('\t'*(level-1) + f'({node.data})\n')
+            for k,child in node.children.items():
+                nodes.append('\t'*level + f'--<{k}>--\n')
+                r(child, level+1)
+        r(self.root, 0)
+        return ''.join(nodes)
 
     def insert(self, key):
-        """insert a new key
+        """insert a new key... recursive attempt
         """
         data = key
         def lcp(key_1, key_2):
@@ -36,39 +39,37 @@ class RTrie():
             for i in range(min(len(key_1),len(key_2))):
                 if key_1[i] != key_2[i]: return i
             return i+1
-        current_node = self.root
-        print(f'-------------------------------------------------------------------')
-        print(f'inserting key: {key}')
-        while key:
+        def r(current_node, key):
+            """recursive branching...
+            no children -> new branch
+            common root + remainings -> split and extend
+            common root + no remainings -> extend
+            no comomon root -> create new branch
+            """
+            # base case... no children
             if not current_node.children:
-                print(f'no children... inserting key {key}')
-                current_node = current_node.children.setdefault(key, self.Node())
-                break
+                current_node.children.setdefault(key, self.Node()).data = data
+                return
+            # look for similar roots in the children...
             for k, child in current_node.children.items():
-                # find common root...
                 i = lcp(k, key)
                 prefix, suffix, key = k[:i], k[i:], key[i:]
-                print(f'prefix: {prefix}, suffix: {suffix}, key: {key}, at: {i}')
                 if prefix and suffix:
-                    # split...
+                    # common root found... branching
                     current_node.children[prefix] = self.Node()
                     del(current_node.children[k])
-                    # original branch...
+                    # append suffixs to common root
                     current_node.children[prefix].children[suffix] = self.Node()
                     current_node.children[prefix].children[suffix].data = child.data
                     current_node.children[prefix].children[suffix].children = child.children
-                    current_node = current_node.children[prefix]
-                    break
+                    # recurse on the shared root
+                    return r(current_node.children[prefix], key)
                 elif prefix and not suffix:
-                    # keep moving forward...
-                    current_node = child
-                    break
-            print(f'no common prefix in the children... inserting {key} anyways...')
-            current_node = current_node.children.setdefault(key, self.Node())
-            key = ''
-        # create new branch...
-        # current_node = current_node.children.setdefault(key, self.Node())
-        current_node.data = data
+                    # common root found... extending
+                    return r(child, key)
+            # no common root... create new child branch
+            current_node.children.setdefault(key, self.Node()).data = data
+        return r(self.root, key)
 
     def predict(self, word=None):
         if not word or not self.root.children: return []
@@ -92,5 +93,4 @@ class RTrie():
         return current_node.data
 
 keys = 'erick quiere mucho a su marion aunque ella ya no nos quiera...'.split()
-keys = 'erick quiere a marion mariana quien es esa? achso marina no?'.split()
 rt = RTrie(keys)

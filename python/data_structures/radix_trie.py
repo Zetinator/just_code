@@ -134,6 +134,3 @@ class RTrie():
                     return r(current_node.children[prefix], key)
             raise ValueError(f'{_key} not found')
         return r(self.root, key)
-
-keys  = 'erick quiere mucho a su marion aunque ella ya no nos quiera tanto'.split()
-rt = RTrie(keys)

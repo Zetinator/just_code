@@ -8,7 +8,9 @@ from .queue import Queue
 from .stack import Stack
 from .trie import Trie
 from .radix_trie import RTrie
+from .fenwick_tree import FenwickTree
 from .graph import Graph
 from .wgraph import WGraph
+from .uwgraph import UWGraph
 from .bit_mask import *
 from .disjoint_set import *

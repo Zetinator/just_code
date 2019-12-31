@@ -59,6 +59,12 @@ class TestDataStructures(unittest.TestCase):
         trie = Trie(keys)
         self.assertEqual(trie.predict('quier'), ['quiere','quiera'])
 
+    def test_fenwick_tree(self):
+        test = [4, 2, 3, 3, 3, 5, 9, 2, 13, 4, 14, 4, 9, 5, 7]
+        i = 3
+        ft = FenwickTree(test)
+        self.assertEqual(ft.sum_until(i), 9)
+
     def test_bitmask(self):
         state = 63
         self.assertEqual(reset(state, 3), 55)
@@ -73,6 +79,17 @@ class TestDataStructures(unittest.TestCase):
                 }
         graph = Graph(graph)
         self.assertEqual(graph.neighbors('b'), ["c", "e"])
+
+    def test_uwgraph(self):
+        graph = {0: [(1, 1),(2, 7)],
+                  1 : [(3, 9), (5, 15)],
+                  2 : [(4, 4)],
+                  3 : [(4, 10), (5, 5)],
+                  4 : [(5, 3)],
+                  5 : []
+                }
+        graph = UWGraph(graph)
+        self.assertEqual(graph.neighbors(2), [4])
 
     def test_wgraph(self):
         graph = {0: [(1, 1),(2, 7)],
@@ -168,15 +185,26 @@ class TestDataAlgorithms(unittest.TestCase):
                 }
         graph = WGraph(graph)
         self.assertEqual(sssp_dp(graph, 0, 5), [0, 2, 4, 5])
+
+    def test_kruskal(self):
+        graph = {0: [(1, 9),(2, 75)],
+                  1 : [(0, 9), (2, 95), (3, 19), (4, 15)],
+                  2 : [(0, 75), (1,95), (3, 51)],
+                  3 : [(1, 19), (2, 51), (4, 31)],
+                  4 : [(1, 15),(3, 31)],
+                }
+        graph = WGraph(graph)
+        self.assertEqual(kruskal(graph), {(0, 1), (3, 2), (1, 3), (4, 1)})
+
     def test_prim(self):
         graph = {0: [(1, 9),(2, 75)],
                   1 : [(0, 9), (2, 95), (3, 19), (4, 15)],
                   2 : [(0, 75), (1,95), (3, 51)],
                   3 : [(1, 19), (2, 51), (4, 31)],
-                  4 : [(1, 42),(3, 31)],
+                  4 : [(1, 15),(3, 31)],
                 }
         graph = WGraph(graph)
-        self.assertEqual(prim(graph), {(0, 1), (3, 2), (1, 3), (3, 4)})
+        self.assertEqual(prim(graph), {(0, 1), (3, 2), (1, 3), (1, 4)})
 
     def test_gcd(self):
         n1 = 99

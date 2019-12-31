@@ -10,7 +10,7 @@ the ADT contains the following methods:
     - remove_edge: removes the edge from the graph
 """
 
-class WGraph():
+class UWGraph():
     def __init__(self, from_dictionary=None):
         self.inner = from_dictionary
         self.edges = set()
@@ -55,7 +55,7 @@ class WGraph():
     def weight(self, x, y):
         """returns the weight between x, y
         """
-        return self.weights.get((x, y), None)
+        return self.weights.get((x, y), None) or self.weights.get((y, x), None)
 
     def adjacent(self, x, y):
         """returns True if the two give nodes are adjacent, false otherwise
@@ -95,3 +95,4 @@ class WGraph():
 
     def __repr__(self):
         return repr(self.inner)
+

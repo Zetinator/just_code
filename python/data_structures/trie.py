@@ -2,7 +2,6 @@
 the ADT contains the following methods:
     - insert
     - search
-    - travese
     - delete
 """
 class Trie():

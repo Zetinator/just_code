@@ -15,7 +15,7 @@ def retrieve_path(parents: dict, start, end):
 
 def floyd_warshall(graph: wgraph.WGraph) -> list:
     """returns the shortest path between all the nodes in the wgraph in O(N**3)
-    good for dense graphs... for sparse ones use johnson's algorithm
+    good for dense graphs... for sparse ones use johnson's algorithm, or dijkstra
     this version retrieves the min 'distance' matrix and paths matrix 'parents'
     """
     # set all unknowns pairs (u,v) to inf, and source -> source to 0's

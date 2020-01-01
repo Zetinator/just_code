@@ -241,6 +241,23 @@ class TestDataAlgorithms(unittest.TestCase):
         graph = WGraph(graph)
         self.assertEqual(prim(graph), {(0, 1), (3, 2), (1, 3), (1, 4)})
 
+    def test_welsh_powell(self):
+        # https://en.wikipedia.org/wiki/Petersen_graph
+        graph = {1: [5,6,2],
+                2 : [1,7,3],
+                3 : [2,8,4],
+                4 : [5,9,3],
+                5 : [1,10,4],
+                6 : [8,9,1],
+                7 : [2,10,9],
+                8 : [3,6,10],
+                9 : [7,6,4],
+                10 : [5,7,8],
+                }
+        graph = Graph(graph)
+        res = {1: 0, 2: 1, 3: 0, 4: 1, 5: 2, 6: 1, 7: 0, 8: 2, 9: 2, 10: 1}
+        self.assertEqual(welsh_powell(graph), res)
+
     def test_gcd(self):
         n1 = 99
         n2 = 33

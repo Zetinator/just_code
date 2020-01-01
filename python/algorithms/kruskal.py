@@ -10,8 +10,6 @@ from data_structures import disjoint_set
 def kruskal(graph: wgraph.WGraph) -> list:
     """returns min spanning tree in the given graph
     """
-    # special case: empty graph
-    if not graph: return
     # set-up
     cycle_detector, edges = disjoint_set.DJS(), set()
     q = sorted(graph.edges, key=lambda x: graph.weight(x[0], x[1]))

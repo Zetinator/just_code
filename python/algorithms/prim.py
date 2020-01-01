@@ -30,5 +30,4 @@ def prim(graph: wgraph.WGraph) -> list:
         for neighbor in graph.neighbors(c_node):
             # relax a little, I'm glad I inspire you but Stan, why are you so mad?
             heap.push((graph.weight(neighbor, c_node), neighbor, c_node))
-    # print(f'MST of: {min_weight}, found with edges: {edges}')
     return edges

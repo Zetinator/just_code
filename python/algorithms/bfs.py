@@ -4,14 +4,13 @@ https://en.wikipedia.org/wiki/Breadth-first_search
 """
 from data_structures import graph
 
-def retrieve_path(parents: dict, end):
+def retrieve_path(parents: dict, node):
     """returns the path from start to the given end
     """
-    path = [end]
-    current_node = end
-    while parents[current_node] != None:
-        path.append(parents[current_node])
-        current_node = parents[current_node]
+    path = []
+    while node != None:
+        path.append(node)
+        node = parents[node]
     path.reverse()
     return path
 

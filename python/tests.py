@@ -175,6 +175,17 @@ class TestDataAlgorithms(unittest.TestCase):
         graph = WGraph(graph)
         self.assertEqual(dijkstra(graph, 0, 5), [0, 2, 4, 5])
 
+    def test_bellman_ford(self):
+        graph = {0: [(1, 1),(2, 7)],
+                  1 : [(3, 9), (5, 15)],
+                  2 : [(4, 4)],
+                  3 : [(4, 10), (5, 5)],
+                  4 : [(5, 3)],
+                  5 : []
+                }
+        graph = WGraph(graph)
+        self.assertEqual(bellman_ford(graph, 0, 5), [0, 2, 4, 5])
+
     def test_sssp_dp(self):
         graph = {0: [(1, 1),(2, 7)],
                   1 : [(3, 9), (5, 15)],
@@ -195,6 +206,19 @@ class TestDataAlgorithms(unittest.TestCase):
                 }
         graph = WGraph(graph)
         self.assertEqual(kruskal(graph), {(0, 1), (3, 2), (1, 3), (4, 1)})
+
+    def test_tarjan(self):
+        graph = {0: [1],
+                  1 : [3],
+                  2 : [1],
+                  3 : [2, 4],
+                  4 : [5],
+                  5 : [7],
+                  6 : [4],
+                  7 : [6],
+                }
+        graph = Graph(graph)
+        self.assertEqual(tarjan(graph), [[6, 7, 5, 4], [2, 3, 1], [0]])
 
     def test_prim(self):
         graph = {0: [(1, 9),(2, 75)],

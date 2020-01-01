@@ -186,6 +186,17 @@ class TestDataAlgorithms(unittest.TestCase):
         graph = WGraph(graph)
         self.assertEqual(bellman_ford(graph, 0, 5), [0, 2, 4, 5])
 
+    def test_floyd_warshall(self):
+        graph = {0: [(1, 9),(2, 75)],
+              1 : [(0, 9), (2, 95), (3, 19), (4, 15)],
+              2 : [(0, 75), (1,95), (3, 51)],
+              3 : [(1, 19), (2, 51), (4, 31)],
+              4 : [(1, 15),(3, 31)],
+            }
+        graph = WGraph(graph)
+        distances, parents = floyd_warshall(graph)
+        self.assertEqual(distances[0][4], 24)
+
     def test_sssp_dp(self):
         graph = {0: [(1, 1),(2, 7)],
                   1 : [(3, 9), (5, 15)],

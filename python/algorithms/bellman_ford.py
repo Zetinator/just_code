@@ -37,14 +37,3 @@ def bellman_ford(graph: wgraph.WGraph, start, end) -> list:
         # if a path gets updated, we have cycles...
         if distances[v] > delta: raise ValueError(f'negative cycle detected...')
     return retrieve_path(parents, end)
-
-graph = {0: [(1, 1),(2, 7)],
-          1 : [(3, 9), (5, 15)],
-          2 : [(4, 4)],
-          3 : [(4, 10), (5, 5)],
-          4 : [(5, 3)],
-          5 : []
-        }
-graph = wgraph.WGraph(graph)
-print(f'ans: {bellman_ford(graph, 0, 5)}')
-# self.assertEqual(bellman_ford(graph, 0, 5), [0, 2, 4, 5])

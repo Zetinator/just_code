@@ -13,7 +13,7 @@ def tarjan(g: graph.Graph) -> list:
     cc_stack, scc = [], []
     def r(current_node):
         tarjan.i += 1
-        indexes[current_node] = low_i[current_node] = tarjan.i, tarjan.i
+        indexes[current_node], low_i[current_node] = tarjan.i, tarjan.i
         cc_stack.append(current_node)
         for neighbor in g.neighbors(current_node):
             # no revisiting...

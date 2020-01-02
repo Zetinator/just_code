@@ -8,12 +8,14 @@ the ADT contains the following methods:
 
 class RBTree():
     class Node():
-        def __init__(self, data=None, parent= None, color='r'):
+        def __init__(self, data=None, color='r'):
             self.data = data
-            self.parent = parent
             self.left = None
             self.right = None
             self.color = color
+
+        def __repr__(self):
+            return repr(self.data)
 
     def __init__(self, x=[]):
         self.root = None
@@ -26,11 +28,9 @@ class RBTree():
         # create replacement...
         tmp = self.Node(pivot.data)
         tmp.left, tmp.right = orphan, pivot.right
-        tmp.left.parent = tmp.right.parent = tmp
         # rotate...
         pivot.data = pivot.left.data
         pivot.left, pivot.right = pivot.left.left, tmp
-        pivot.left.parent = pivot.right.parent = pivot
 
     def rotate_left(self, pivot):
         # take care of orphans...
@@ -38,73 +38,61 @@ class RBTree():
         # create replacement...
         tmp = self.Node(pivot.data)
         tmp.left, tmp.right = pivot.left, orphan
-        tmp.left.parent = tmp.right.parent = tmp
         # rotate...
-        pivot.value = pivot.right.value
+        pivot.data = pivot.right.data
         pivot.left, pivot.right = tmp, pivot.right.right
-        pivot.left.parent = pivot.right.parent = pivot
 
     def insert(self, data):
         if data == None: return
         # perform standard bst insertion...
         if not self.root: self.root = self.Node(data, color='b'); return
-        def r(node):
+        def r(node, parent):
+            print(f'inserting: {data}, current_node: {node}, parent: {parent}')
             if data == node.data: raise ValueError('No duplicates allowed...')
             if data < node.data:
-                if node.left: r(node.left)
-                else: node.left = self.Node(data, node)
+                if node.left: r(node.left, node)
+                else: node.left = self.Node(data)
             else:
-                if node.right: r(node.right)
-                else: node.right = self.Node(data, node)
-            print(f'inserting: {data}, visiting... {node.data}')
+                if node.right: r(node.right, node)
+                else: node.right = self.Node(data)
             # repair violations to rb_tree's invariants... 4 special cases
-            def grandpa(node):
-                if not node.parent: return
-                return node.parent.parent
-            def brother(node):
-                if not node.parent: return self.Node(color='b')
-                bro = node.parent.left if node.parent.right == node else node.parent.right
+            def brother(node, parent):
+                if not parent: return self.Node(color='b')
+                bro = parent.left if parent.right == node else parent.right
                 return bro or self.Node(color='b')
-            def uncle(node):
-                if not node.parent and not node.parent.parent: return self.Node(color='b')
-                return brother(node.parent) or self.Node(color='b')
             # special case 1: just make sure root remains black...
-            if not node.parent: node.color = 'b'; print('case:1'); return
+            if not parent: node.color = 'b'; print('case 1: root'); return
             # special case 2: no further violations...
-            elif node.parent.color == 'b': print(f'case: 2'); return
+            elif node.color == 'b': print(f'case 2: normal'); return
             # special case 3: uncle is red -> recoloring
-            elif uncle(node).color == 'r':
-                print(f'case 3')
-                _uncle = uncle(node)
-                grandparent = grandpa(node)
-                grandparent.color = 'r'
-                node.parent.color = uncle.color = 'b'
+            elif brother(node, parent).color == 'r':
+                print(f'case 3: recolor')
+                parent.color = 'r'
+                node.color = brother(node, parent).color = 'b'
                 return
             # special case 4: uncle is black -> rotate
-            # if uncle(node).color == 'b':
             else:
-                print(f'case 4')
-                parent, grandparent = node.parent, grandpa(node)
+                print(f'case 4: rotate')
                 # rotate right
-                if node == parent.left:
-                    print(f'rotate right')
+                if parent.left == node:
+                    print('rotate right')
                     # left -> right
-                    if parent == grandparent.left:
-                        print(f'left -> right')
-                        self.rotate_left(parent)
-                    self.rotate_right(grandparent)
+                    if data > node.data:
+                        print('left -> right')
+                        self.rotate_left(node)
+                    self.rotate_right(parent)
                 # rotate left
-                if node == parent.right:
-                    print(f'rotate left')
+                else:
+                    print('rotate left')
                     # right -> left
-                    if parent == grandparent.right:
-                        print(f'right - left')
-                        self.rotate_right(parent)
+                    if data < node.data:
+                        print('rotate left')
+                        self.rotate_right(node)
                     self.rotate_left(parent)
                 # switch colors parent <-> brother
-                _brother = brother(node)
-                node.parent.color, _brother.color = _brother.color, node.parent.color
-        r(self.root)
+                bro = brother(node, parent)
+                parent.color, bro.color = bro.color, parent.color
+        r(self.root, None)
 
     def __repr__(self):
         if not self.root: return
@@ -117,7 +105,8 @@ class RBTree():
         r(self.root)
         return '\n'.join(res)
 
-# from random import uniform
-# test = list(set([int(uniform(1, 20)) for _ in range(15)]))
+from random import uniform
+test = list(set([int(uniform(1, 20)) for _ in range(30)]))
 test = [2, 3, 7, 9, 10, 11, 13, 17, 18]
+test = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 16, 17, 18, 19]
 rbt = RBTree(test)

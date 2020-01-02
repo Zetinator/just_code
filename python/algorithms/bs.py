@@ -7,7 +7,7 @@ def bs(x: list, val) -> int:
     the elements in the list must support the '<' comparison operator
     """
     if not x or not val: ValueError(f'{val} not in the list')
-    l, r = 0, len(x)
+    l, r = 0, len(x)-1
     while l < r:
         m = (l+r)//2
         if x[m] == val: return m

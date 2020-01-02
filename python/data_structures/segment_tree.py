@@ -1,69 +1,67 @@
 """custom implementation of a segment tree with the purpose of practice
 https://en.wikipedia.org/wiki/Segment_tree
 the ADT contains the following methods:
-    - build
-    - query
-    - traverse
+    - build: build tree from the given array
+    - query: max query on the given range
 """
 class ST():
     class Node():
         """Node basic chainable storage unit
         """
         def __init__(self, data=None, index=None):
-            self.value = data
-            self.index = index
+            self.data = data
             self.left = None
             self.right = None
+            # just for visualization purposes...
+            self.index = index
 
     def __init__(self, v):
         self.v = v
         self.build()
 
+    def __len__(self):
+        return len(self.v)
+
     def build(self):
+        """build the segment tree from the given array v
+        """
         if not self.v: return
-        self.root = self.Node()
         L, R = 0, len(self.v)-1
-        def r_build(current_node, L, R):
-            # base case: L > R
-            if L > R: return
+        def r_build(L, R):
             # base case: just one element in the interval
-            if L == R:
-                return self.Node(self.v[L], (L,R))
+            if L == R: return self.Node(self.v[L], (L,R))
             # divide
             m = (L+R)//2
-            current_node.left = r_build(self.Node(), L, m)
-            current_node.right = r_build(self.Node(), m+1, R)
+            node = self.Node()
+            node.left, node.right = r_build(L, m), r_build(m+1, R)
             # conquer
-            get_val = lambda x: x.value if x else -float('inf')  # None = -inf
-            current_node.value = max(get_val(current_node.left), get_val(current_node.right))
-            current_node.index=((L,R))
-            return current_node
-        return r_build(self.root, L, R)
+            get_val = lambda x: x.data if x else -float('inf')  # None -> -inf
+            node.data = max(get_val(node.left), get_val(node.right))
+            node.index=((L,R))
+            return node
+        self.root = r_build(L, R)
             
-    def query(self, _from, _to):
-        # special case: empty tree
+    def query(self, i, j):
+        """return max in the given range (i,j) inclusive, O(log(N))
+        """
         if not self.root: return
         # special case: invalid range as input
-        if _from > _to: return
+        if not 0 <= i <= j < len(self.v): raise ValueError(f'invalid range: {(i,j)}')
         L, R = 0, len(self.v)-1
-        def deep(current_node, L, R, _from, _to):
-            if not current_node or _from > _to: return -float('inf')
-            if _from <= L and R <= _to: return current_node.value
+        def r(node, L, R, i, j):
+            if i > j: return -float('inf')
+            if i <= L <= R <= j: return node.data
             m = (L+R)//2
-            return max(deep(current_node.left, L, m, _from, min(m, _to)),
-                        deep(current_node.right, m+1, R, max(_from, m+1), _to))
-        return deep(self.root, L, R, _from, _to)
+            return max(r(node.left, L, m, i, min(m, j)),
+                        r(node.right, m+1, R, max(i, m+1), j))
+        return r(self.root, L, R, i, j)
 
-    def traverse(self):
-        """traverse the tree
-        """
-        def deep(current_node, level):
-            if not current_node: return
-            deep(current_node.left, level+1)
-            print('\t'*level, f'--> ({current_node.value})[{current_node.index}]')
-            deep(current_node.right, level+1)
-        return deep(self.root, level=0)
-    
     def __repr__(self):
-        self.traverse()
-        return f'{self.__dict__}:'
+        res = []
+        def r(node, level=0):
+            if not node: return
+            r(node.left, level+1)
+            res.append('\t'*level + f'-->({node.data})[{node.index}]')
+            r(node.right, level+1)
+        r(self.root)
+        return '\n'.join(res)

@@ -21,6 +21,11 @@ class AVL():
             for e in x:
                 self.insert(e)
 
+    def __len__(self):
+        """depth of the tree
+        """
+        return self.root.height
+
     def rotate_left(self, pivot):
         """left rotation...
         https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
@@ -60,16 +65,16 @@ class AVL():
         # special case: empty bst
         if not self.root: self.root = self.Node(x); return
         # execute normal insertion
-        def deep(current_node, x):
+        def r(current_node, x):
             if current_node.value == x: raise ValueError('No duplicates allowed!')
             if x < current_node.value:
                 if current_node.left:
-                    deep(current_node.left, x)
+                    r(current_node.left, x)
                 else:
                     current_node.left = self.Node(x)
             else:
                 if current_node.right:
-                    deep(current_node.right, x)
+                    r(current_node.right, x)
                 else:
                     current_node.right = self.Node(x)
             # update the weights of each visited node
@@ -88,37 +93,26 @@ class AVL():
                     self.rotate_right(current_node.right)
                 self.rotate_left(current_node)
                 return
-        deep(self.root, x)
+        r(self.root, x)
 
     def search(self, x):
         """standard search for 'x' in the tree
         """
-        def deep(current_node, x):
+        def r(current_node, x):
             if not current_node: raise ValueError(f'{x} not in the tree')
             if current_node.value == x: return current_node
             if x < current_node.value:
-                return deep(current_node.left, x)
+                return r(current_node.left, x)
             else:
-                return deep(current_node.right, x)
-        return deep(self.root, x)
+                return r(current_node.right, x)
+        return r(self.root, x)
 
-    def traverse(self):
-        """traverse the tree
-        """
-        def deep(current_node, level):
-            if not current_node: return
-            deep(current_node.left, level+1)
-            print('\t'*level, f'-->({current_node.value})')
-            deep(current_node.right, level+1)
-        return deep(self.root, level=0)
-    
     def __repr__(self):
-        ans = []
-        def deep(current_node, level):
+        res = []
+        def r(current_node, level=0):
             if not current_node: return
-            deep(current_node.left, level+1)
-            ans.append('\t'*level)
-            ans.append(f'-->({current_node.value})\n')
-            deep(current_node.right, level+1)
-        deep(self.root, level=0)
-        return ''.join(ans)
+            r(current_node.left, level+1)
+            res.append('\t'*level + f'-->({current_node.value})')
+            r(current_node.right, level+1)
+        r(self.root)
+        return '\n'.join(res)

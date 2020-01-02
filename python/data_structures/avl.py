@@ -94,17 +94,16 @@ class AVL():
                 return
         r(self.root, x)
 
-    def search(self, x):
+    def search(self, value):
         """standard search for 'x' in the tree
         """
-        def r(current_node, x):
-            if not current_node: raise ValueError(f'{x} not in the tree')
-            if current_node.value == x: return current_node
-            if x < current_node.value:
-                return r(current_node.left, x)
-            else:
-                return r(current_node.right, x)
-        return r(self.root, x)
+        if not self.root: raise ValueError(f'{value} not found')
+        def r(node):
+            if not node: raise ValueError(f'{value} not found')
+            if value == node.value: return node
+            if value < node.value: return r(node.left)
+            else: return r(node.right)
+        return r(self.root)
 
     def __repr__(self):
         res = []

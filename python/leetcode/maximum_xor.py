@@ -11,13 +11,12 @@ class Trie():
             self.data = None
             self.children = {}
 
-    def __init__(self, x=None):
+    def __init__(self, x=[]):
         """can be initialized from an array of keys
         """
         self.root = self.Node()
-        if x:
-            for key in x:
-                self.insert(key)
+        for key in x:
+            self.insert(key)
 
     def __repr__(self):
         nodes = []

@@ -5,11 +5,10 @@ the ADT contains the following methods:
     - pop
 """
 class Heap():
-    def __init__(self, x=None):
+    def __init__(self, x=[]):
         self._ = []
-        if x:
-            for e in x:
-                self.push(e)
+        for e in x:
+            self.push(e)
 
     def push(self, x):
         """push a new element into the heap

@@ -14,11 +14,10 @@ class BST():
             self.left = None
             self.right = None
 
-    def __init__(self, x=None):
+    def __init__(self, x=[]):
         self.root = None
-        if x:
-            for e in x:
-                self.insert(e)
+        for e in x:
+            self.insert(e)
 
     def insert(self, x):
         """insert a new node into the bst

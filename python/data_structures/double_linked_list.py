@@ -15,11 +15,10 @@ class DoubleLinkedList():
             self.prev = prev
             self.next = None
 
-    def __init__(self, x=None):
+    def __init__(self, x=[]):
         self.head = None
-        if x:
-            for e in x:
-                self.append(e)
+        for e in x:
+            self.append(e)
 
     def append(self, x):
         """append a new node to the tail

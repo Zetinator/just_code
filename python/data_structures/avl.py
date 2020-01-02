@@ -15,11 +15,10 @@ class AVL():
             self.left = None
             self.right = None
 
-    def __init__(self, x=None):
+    def __init__(self, x=[]):
         self.root = None
-        if x:
-            for e in x:
-                self.insert(e)
+        for e in x:
+            self.insert(e)
 
     def __len__(self):
         """depth of the tree

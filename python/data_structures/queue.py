@@ -13,12 +13,11 @@ class Queue():
             self.prev = prev
             self.next = None
 
-    def __init__(self, x=None):
+    def __init__(self, x=[]):
         self.tail = None
         self.head = self.tail
-        if x:
-            for e in x:
-                self.push(e)
+        for e in x:
+            self.push(e)
 
     def push(self, x):
         """push a new node into the queue

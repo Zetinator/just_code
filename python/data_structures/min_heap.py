@@ -6,9 +6,15 @@ the ADT contains the following methods:
 """
 class Heap():
     def __init__(self, x=[]):
-        self._ = []
+        self.v = []
         for e in x:
             self.push(e)
+
+    def __len__(self):
+        return len(self.v)
+
+    def __repr__(self):
+        return str(self.v)
 
     def push(self, x):
         """push a new element into the heap
@@ -18,48 +24,41 @@ class Heap():
         if not x: return
         # auxiliar function to compute the parent index
         parent = lambda i: max((i-1)//2, 0)
-        _ = self._  # alias because i am lazy to write
+        v = self.v  # alias because i am lazy to write
         # special case: empty heap
-        if not _: _.append(x); return
+        if not v: v.append(x); return
         # general case
-        i = len(_)
-        _.append(x)
-        while _[parent(i)] > _[i]:  # heapify-up
-            # print(f'index: {i}, parent: {_[parent(i)]}, current: {_[i]}')
-            _[parent(i)], _[i] = _[i], _[parent(i)]
+        i = len(v)
+        v.append(x)
+        # bubble up...
+        while v[parent(i)] > v[i]:  # heapify-up
+            v[parent(i)], v[i] = v[i], v[parent(i)]
             i = parent(i)
 
     def peek(self):
-        """peek the maximum
+        """peek the minimum
         """
         # special case: empty heap
-        if not self._: return
-        return self._[0]
+        if not self.v: return
+        return self.v[0]
 
     def pop(self):
-        """pop the maximum
+        """pop the minimum
         """
-        _ = self._  # alias again
+        v = self.v  # alias again
         # special case: empty heap
-        if not _: return
+        if not v: return
         # swap max <-> last
-        _[0], _[-1] = _[-1], _[0]
-        minimum = _.pop()
-        # sift down
+        v[0], v[-1] = v[-1], v[0]
+        minimum = v.pop()
+        # bubble down
         i = 0
-        i_left = lambda: i*2 + 1
-        i_right = lambda: i*2 + 2
-        while (i_left() < len(_) and _[i_left()] < _[i]) or \
-              (i_right() < len(_) and _[i_right()] < _[i]):
-            max_child = i_left()
-            if i_right() < len(_) and _[i_right()] < _[i_left()]:
-                max_child = i_right()
-            _[i], _[max_child] = _[max_child], _[i]  # swap
+        left = lambda: i*2 + 1 if i*2 + 1 < len(v) else False
+        right = lambda: i*2 + 2 if i*2 + 2 < len(v) else False
+        while left() and v[left()] < v[i] or right() and v[right()] < v[i]:
+            max_child = left()
+            if right() and v[right()] < v[left()]:
+                max_child = right()
+            v[i], v[max_child] = v[max_child], v[i]  # swap
             i = max_child
         return minimum
-
-    def __len__(self):
-        return len(self._)
-
-    def __repr__(self):
-        return str(self._)

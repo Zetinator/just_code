@@ -48,6 +48,7 @@ class ST():
         # special case: invalid range as input
         if not 0 <= i <= j < len(self.v): raise ValueError(f'invalid range: {(i,j)}')
         L, R = 0, len(self.v)-1
+        # modified binary search...
         def r(node, L, R, i, j):
             if i > j: return -float('inf')
             if i <= L <= R <= j: return node.data

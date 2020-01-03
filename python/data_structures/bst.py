@@ -1,9 +1,9 @@
 """custom implementation of a binary search tree with the purpose of practice
 the ADT contains the following methods:
-    - insert
-    - search
-    - delete
-    - traverse
+    - insert: insert a new node in the tree
+    - search: return the node with the given value
+    - delete: delete the given value from the tree
+    - successor: return the next in order successor
 """
 class BST():
     class Node():
@@ -13,11 +13,23 @@ class BST():
             self.value = x
             self.left = None
             self.right = None
+        def __repr__(self):
+            return repr(self.value)
 
     def __init__(self, x=[]):
         self.root = None
         for e in x:
             self.insert(e)
+
+    def __repr__(self):
+        res = []
+        def r(current_node, level=0):
+            if not current_node: return
+            r(current_node.left, level+1)
+            res.append('\t'*level + f'-->({current_node.value})')
+            r(current_node.right, level+1)
+        r(self.root)
+        return '\n'.join(res)
 
     def insert(self, x):
         """insert a new node into the bst
@@ -40,95 +52,82 @@ class BST():
             return
         return r(self.root, x)
 
-    def search(self, x):
-        """search for 'x' in the tree
+    def search(self, value):
+        """standard binary search in the tree
         """
-        def r(current_node, x):
-            if not current_node: raise ValueError(f'{x} not in the tree')
-            if current_node.value == x: return current_node
-            if x < current_node.value:
-                return r(current_node.left, x)
-            else:
-                return r(current_node.right, x)
-        return r(self.root, x)
+        if not self.root: raise ValueError(f'{value} not found')
+        def r(node):
+            if not node: raise ValueError(f'{value} not found')
+            if value == node.value: return node
+            if value < node.value: return r(node.left)
+            else: return r(node.right)
+        return r(self.root)
 
-    def traverse(self):
-        """traverse the tree
+    def successor(self, value):
+        """get the next in-order successor
         """
-        def r(current_node, level):
-            if not current_node: return
-            r(current_node.left, level+1)
-            print('\t'*level, f'--> ({current_node.value})')
-            r(current_node.right, level+1)
-        return r(self.root, level=0)
+        if not self.root or value == None: raise ValueError(f'successor of {value} not found')
+        # execute standard binary search... but keeping ranges
+        def get(node, r):
+            if not node: raise KeyError(f'{value} not in the tree')
+            if node.value == value: return (node, r)
+            if value < node.value: return get(node.left, node)
+            else: return get(node.right, r)
+        node, r = get(self.root, None)
+        # no right subtree, return the previous bigger ancestor
+        if not node.right: return r
+        # go all left in the right subtree to get the successor
+        node = node.right
+        while node.left: node = node.left
+        return node
     
-    def __repr__(self):
-        res = []
-        def r(current_node, level=0):
-            if not current_node: return
-            r(current_node.left, level+1)
-            res.append('\t'*level + f'-->({current_node.value})')
-            r(current_node.right, level+1)
-        r(self.root)
-        return '\n'.join(res)
-    
-    def retrieve_successor(self, node):
-        # first some pruning
-        if not node: return
-        if not node.right: return
-        def r(parent, current_node, righteous=1):  # comes from the right side of the parent
-            if not current_node.left:  # found it
-                if righteous:
-                    if current_node.right: parent.right = current_node.right
-                    if not current_node.right: parent.right = None
-                else:
-                    if current_node.right: parent.left = current_node.right
-                    if not current_node.right: parent.left = None
-                return current_node
-            return r(current_node, current_node.left, 0)
-        return r(node, node.right, 1)
+    def rotate_right(self, node):
+        """standard right rotation
+        """
+        tmp = self.Node(node.value)
+        tmp.left, tmp.right = node.left.right, node.right
+        # rotate...
+        node.value = node.left.value
+        node.left, node.right = node.left.left, tmp
 
-    def delete(self, v):
-        """search and delete 'x' in the tree
-        More complicated than what I thought
+    def rotate_left(self, node):
+        """standard left rotation
         """
-        def r(v, parent, current_node, righteous=1):
-            if not current_node: return False
-            if current_node.value == v:
-                # case: no children --> set None
-                if not current_node.left and not current_node.right:
-                    if not parent:  # are you root?
-                        self.root = None
-                        return True
-                    if righteous:
-                        parent.right = None
-                    else:
-                        parent.left = None
-                    return True
-                # case: 2 children --> replace with successor
-                if current_node.left and current_node.right:
-                    tmp_node = self.retrieve_successor(current_node)
-                    current_node.value = tmp_node.value
-                    return True
-                # case: one children --> bypass
-                if current_node.left or current_node.right:
-                    if not parent: # are you root?
-                        self.root = current_node.left or current_node.right
-                        return True
-                    if righteous:
-                        parent.right = current_node.left or current_node.right
-                    else:
-                        parent.left = current_node.left or current_node.right
-                    return True
-            # sorry mate... keep looking
-            if v < current_node.value:
-                return r(v, current_node, current_node.left, 0)
+        tmp = self.Node(node.value)
+        tmp.left, tmp.right = node.left, node.right.left
+        # rotate...
+        node.value = node.right.value
+        node.left, node.right = tmp, node.right.right
+
+    def delete(self, value):
+        """search for value, and rotate until leaf, then delete
+        """
+        if value == None or not self.root: raise KeyError(f'{value} not found')
+        # standard binary search but keep the parent
+        def get(node, parent):
+            if not node: raise KeyError(f'{value} not found')
+            if node.value == value: return (node, parent)
+            if value < node.value: return get(node.left, node)
+            else: return get(node.right, node)
+        node, parent = get(self.root, None)
+        # bring it down to leaf... then is trivial to erase
+        def r(node, parent):
+            # are you root?
+            if not node.left and not node.right:
+                if not parent: self.root = None
+                if node == parent.right: parent.right = None; return
+                else: parent.left = None; return
+            # rotate until leaf...
+            child = node.left or node.right
+            if child == node.left:
+                self.rotate_right(node); r(node.right, node)
             else:
-                return r(v, current_node, current_node.right, 1)
-        if not r(v, None, self.root): raise KeyError(f'{v} is not in the tree, nothing to remove')
-        return True
+                self.rotate_left(node); r(node.left, node)
+        r(node, parent)
 
     def build_from_array(self, indexes):
+        """build from an heap like array...
+        """
         root = self.root
         def build(node, i, indexes, level=0):
             # aux functions
@@ -147,6 +146,8 @@ class BST():
         return root
 
     def traverse_array(self, indexes):
+        """method for debugging the heap-like array
+        """
         def r(i, indexes, level=0):
             left = lambda: i*2 +1
             right = lambda: i*2 +2

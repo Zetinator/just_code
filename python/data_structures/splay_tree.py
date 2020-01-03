@@ -45,42 +45,39 @@ class SplayTree(bst.BST):
 
     def insert(self, value):
         """insert a new node with the given value in the tree
-        standard bst insertion + rotations to keep the heap invariance
+        standard bst insertion + rotations to bring the inserted node to root
         """
         if value == None: return
         if not self.root: self.root = self.Node(value); return
-        # execute standard bst insertion...
+        # execute standard bst insertion, but making the inserted node root
         def r(node):
             if value == node.value: raise ValueError(f'No duplicates allowed...')
             if value < node.value:
                 if node.left: r(node.left)
                 else: node.left = self.Node(value)
+                self.rotate_right(node)
             else:
                 if node.right: r(node.right)
                 else: node.right = self.Node(value)
-            # splay node until its the new root...
-            if value < node.value:
-                self.rotate_right(node)
-            else:
                 self.rotate_left(node)
         r(self.root)
 
     def search(self, value):
         """standard binary search in the tree
+        alike insertion, search also brings the searched node to root
         """
         if not self.root: raise ValueError(f'{value} not found')
         def r(node):
             if not node: raise ValueError(f'{value} not found')
-            if value == node.value: return node
+            if value == node.value: return
             if value < node.value:
-                found = r(node.left)
+                r(node.left)
                 self.rotate_right(node)
-                return found
             else:
-                found = r(node.right)
+                r(node.right)
                 self.rotate_left(node)
-                return found
-        return r(self.root)
+        r(self.root)
+        return self.root
 
     def __repr__(self):
         if not self.root: return
@@ -92,12 +89,3 @@ class SplayTree(bst.BST):
             r(node.right, level +1)
         r(self.root)
         return '\n'.join(res)
-
-# local test...
-from random import uniform
-test = list(set([int(uniform(1, 100)) for _ in range(80)]))
-test = [2, 3, 7, 9, 10, 11, 13, 17, 18]
-# test = [1, 2, 3, 11, 12, 14, 18, 19, 22, 29, 31, 33, 38, 41, 44, 51, 55, 57, 62, 63, 66, 70, 72, 73, 76, 81, 88, 90, 93, 97, 98]
-print(f'testing with: {test}')
-splay = SplayTree(test)
-print(splay)

@@ -2,6 +2,7 @@ from .bst import BST
 from .avl import AVL
 from .rb_tree import RBTree
 from .treap import Treap
+from .splay_tree import SplayTree
 from .max_heap import Heap
 from .segment_tree import ST
 from .linked_list import LinkedList

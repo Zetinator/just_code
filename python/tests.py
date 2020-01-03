@@ -19,6 +19,11 @@ class TestDataStructures(unittest.TestCase):
         treap = Treap(test)
         self.assertEqual(treap.search(93).value, 93)
 
+    def test_splay_tree(self):
+        test = [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]
+        splay = Treap(test)
+        self.assertEqual(splay.search(93).value, 93)
+
     def test_bst(self):
         test = [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]
         bst = BST(test)

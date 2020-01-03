@@ -4,8 +4,9 @@ the ADT contains the following methods:
     - insert
     - search
 """
+from data_structures import bst
 
-class RBTree():
+class RBTree(bst.BST):
     class Node():
         """Node basic chainable storage unit
         """
@@ -14,6 +15,8 @@ class RBTree():
             self.left = None
             self.right = None
             self.color = color
+        def __repr__(self):
+            return repr(self.value)
 
     def __init__(self, x=[]):
         self.root = None

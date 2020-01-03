@@ -5,8 +5,10 @@ the ADT contains the following methods:
     - search
     - delete
 """
+from data_structures import bst
+from random import uniform
 
-class Treap():
+class Treap(bst.BST):
     class Node():
         """Node basic chainable storage unit
         """
@@ -67,7 +69,7 @@ class Treap():
                     self.rotate_left(node)
             else:
                 if node.left.priority > node.priority:
-                    self.rotate_right(parent)
+                    self.rotate_right(node)
         r(self.root)
 
     def delete(self, value):
@@ -124,12 +126,3 @@ class Treap():
             r(node.right, level +1)
         r(self.root)
         return '\n'.join(res)
-
-# local test...
-# from random import uniform
-# test = list(set([int(uniform(1, 100)) for _ in range(80)]))
-# test = [2, 3, 7, 9, 10, 11, 13, 17, 18]
-test = [1, 2, 3, 11, 12, 14, 18, 19, 22, 29, 31, 33, 38, 41, 44, 51, 55, 57, 62, 63, 66, 70, 72, 73, 76, 81, 88, 90, 93, 97, 98]
-print(f'testing with: {test}')
-treap = Treap(test)
-print(treap)

@@ -23,32 +23,27 @@ class BST():
 
     def __repr__(self):
         res = []
-        def r(current_node, level=0):
-            if not current_node: return
-            r(current_node.left, level+1)
-            res.append('\t'*level + f'-->({current_node.value})')
-            r(current_node.right, level+1)
+        def r(node, level=0):
+            if not node: return
+            r(node.left, level+1)
+            res.append('\t'*level + f'-->({node.value})')
+            r(node.right, level+1)
         r(self.root)
         return '\n'.join(res)
 
     def insert(self, x):
         """insert a new node into the bst
         """
-        # special case: empty bst
         if not self.root: self.root = self.Node(x); return
-        # general case
-        def r(current_node, x):
-            if current_node.value == x: raise ValueError('No duplicates allowed!')
-            if x < current_node.value:
-                if current_node.left:
-                    r(current_node.left, x)
-                else:
-                    current_node.left = self.Node(x)
+        # standard binary search insertion
+        def r(node, x):
+            if node.value == x: raise ValueError('No duplicates allowed!')
+            if x < node.value:
+                if node.left: r(node.left, x)
+                else: node.left = self.Node(x)
             else:
-                if current_node.right:
-                    r(current_node.right, x)
-                else:
-                    current_node.right = self.Node(x)
+                if node.right: r(node.right, x)
+                else: node.right = self.Node(x)
             return
         return r(self.root, x)
 

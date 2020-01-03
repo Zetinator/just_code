@@ -14,6 +14,11 @@ class TestDataStructures(unittest.TestCase):
         rbt = AVL(test)
         self.assertEqual(rbt.search(93).value, 93)
 
+    def test_treap(self):
+        test = [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]
+        treap = Treap(test)
+        self.assertEqual(treap.search(93).value, 93)
+
     def test_bst(self):
         test = [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]
         bst = BST(test)

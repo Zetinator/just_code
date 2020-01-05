@@ -11,26 +11,26 @@ We can compute the following:
 The largest of these is 8, so it is the answer.
 """
 def solve(arr):
-    stack_left, stack_right = [(arr[0], 0)], [(arr[-1], len(arr)-1)]
-    left, right = [0], [0]
+    """we keep a stack to access the next biggest in O(1)
+    """
+    stack_left, stack_right = [], []
+    left, right = [], []
     # left -> right
-    for i,e in enumerate(arr[1:], 1):
+    for i,e in enumerate(arr):
         while stack_left and e >= stack_left[-1][0]:
             stack_left.pop()
         left.append(stack_left[-1][1] if stack_left else 0)
-        stack_left.append((e, i))
+        stack_left.append((e, i+1))
     # right -> left
-    for i in reversed(range(len(arr)-1)):
+    for i in reversed(range(len(arr))):
         while stack_right and arr[i] >= stack_right[-1][0]:
             stack_right.pop()
         right.append(stack_right[-1][1] if stack_right else 0)
-        stack_right.append((arr[i], i))
-    print(f'len: {len(left)}, left: {left[49995:50003]}')
-    print(f'len: {len(right)}, right: {right[49995:50003]}')
+        stack_right.append((arr[i], i+1))
     # multiply and we are done...
     res = -float('inf')
     for i,e in enumerate(left):
-        res = max(res, (left[i]+1)*(right[i]+1))
+        res = max(res, (left[i])*(right[len(right)-1 -i]))
     return res
 
 test = """5 4 3 4 5"""

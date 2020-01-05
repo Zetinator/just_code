@@ -14,6 +14,8 @@ class ST():
             self.right = None
             # just for visualization purposes...
             self.index = index
+        def __repr__(self):
+            return repr(self.value)
 
     def __init__(self, v):
         self.v = v
@@ -26,20 +28,20 @@ class ST():
         """build the segment tree from the given array v
         """
         if not self.v: return
-        L, R = 0, len(self.v)-1
-        def r_build(L, R):
+        l, r = 0, len(self.v)-1
+        def r_build(l, r):
             # base case: just one element in the interval
-            if L == R: return self.Node(self.v[L], (L,R))
+            if l == r: return self.Node(self.v[l], (l,r))
             # divide
-            m = (L+R)//2
+            m = (l+r)//2
             node = self.Node()
-            node.left, node.right = r_build(L, m), r_build(m+1, R)
+            node.left, node.right = r_build(l, m), r_build(m+1, r)
             # conquer
             get_val = lambda x: x.value if x else -float('inf')  # None -> -inf
             node.value = max(get_val(node.left), get_val(node.right))
-            node.index=((L,R))
+            node.index=((l,r))
             return node
-        self.root = r_build(L, R)
+        self.root = r_build(l, r)
             
     def query(self, i, j):
         """return max in the given range (i,j) inclusive, O(log(N))
@@ -47,15 +49,15 @@ class ST():
         if not self.root: return
         # special case: invalid range as input
         if not 0 <= i <= j < len(self.v): raise ValueError(f'invalid range: {(i,j)}')
-        L, R = 0, len(self.v)-1
+        l, r = 0, len(self.v)-1
         # modified binary search...
-        def r(node, L, R, i, j):
-            if i > j: return -float('inf')
-            if i <= L <= R <= j: return node.value
-            m = (L+R)//2
-            return max(r(node.left, L, m, i, min(m, j)),
-                        r(node.right, m+1, R, max(i, m+1), j))
-        return r(self.root, L, R, i, j)
+        def r_query(node, l, r, i, j):
+            if not node or l > r or i > r or j < l: return -float('inf')
+            if i <= l <= r <= j: return node.value
+            m = (l+r)//2
+            return max(r_query(node.left, l, m, i, j),
+                        r_query(node.right, m+1, r, i, j))
+        return r_query(self.root, l, r, i, j)
 
     def __repr__(self):
         res = []

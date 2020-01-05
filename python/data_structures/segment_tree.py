@@ -8,8 +8,8 @@ class ST():
     class Node():
         """Node basic chainable storage unit
         """
-        def __init__(self, data=None, index=None):
-            self.data = data
+        def __init__(self, value=None, index=None):
+            self.value = value
             self.left = None
             self.right = None
             # just for visualization purposes...
@@ -35,8 +35,8 @@ class ST():
             node = self.Node()
             node.left, node.right = r_build(L, m), r_build(m+1, R)
             # conquer
-            get_val = lambda x: x.data if x else -float('inf')  # None -> -inf
-            node.data = max(get_val(node.left), get_val(node.right))
+            get_val = lambda x: x.value if x else -float('inf')  # None -> -inf
+            node.value = max(get_val(node.left), get_val(node.right))
             node.index=((L,R))
             return node
         self.root = r_build(L, R)
@@ -51,7 +51,7 @@ class ST():
         # modified binary search...
         def r(node, L, R, i, j):
             if i > j: return -float('inf')
-            if i <= L <= R <= j: return node.data
+            if i <= L <= R <= j: return node.value
             m = (L+R)//2
             return max(r(node.left, L, m, i, min(m, j)),
                         r(node.right, m+1, R, max(i, m+1), j))
@@ -62,7 +62,7 @@ class ST():
         def r(node, level=0):
             if not node: return
             r(node.left, level+1)
-            res.append('\t'*level + f'-->({node.data})[{node.index}]')
+            res.append('\t'*level + f'-->({node.value})[{node.index}]')
             r(node.right, level+1)
         r(self.root)
         return '\n'.join(res)

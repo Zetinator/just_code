@@ -18,14 +18,9 @@ def merge_sort(x: list) -> list:
     while i < len(left) and j < len(right):
         if left[i] < right[j]:
             ans.append(left[i])
-            i +=1
+            i += 1
         else:
             ans.append(right[j])
-            j +=1
-    while i < len(left):
-        ans.append(left[i])
-        i +=1
-    while j < len(right):
-        ans.append(right[j])
-        j +=1
+            j += 1
+    ans += left[i:] + right[j:]
     return ans

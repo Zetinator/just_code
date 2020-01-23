@@ -39,6 +39,11 @@ class TestDataStructures(unittest.TestCase):
         st = ST(test)
         self.assertEqual(st.query(0,2), 66)
 
+    def test_skip_list(self):
+        sl = SkipList(range(10))
+        res = sl.successor(5)
+        self.assertEqual(res.value, 6)
+
     def test_linked_list(self):
         ll = LinkedList(range(10))
         self.assertEqual(ll.head.value, 0)

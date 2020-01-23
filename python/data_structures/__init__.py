@@ -6,6 +6,7 @@ from .splay_tree import SplayTree
 from .max_heap import Heap
 from .segment_tree import ST
 from .linked_list import LinkedList
+from .skip_list import SkipList
 from .double_linked_list import DoubleLinkedList
 from .queue import Queue
 from .stack import Stack

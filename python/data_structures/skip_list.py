@@ -125,5 +125,3 @@ class SkipList():
             if node.value == value: return node
             node = node.next
         raise ValueError(f'{value} not found')
-
-sl = SkipList(range(10))

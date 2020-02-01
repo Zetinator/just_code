@@ -20,21 +20,21 @@ def bfs(graph: graph.Graph, start, end) -> list:
     # special case: start = end
     if start == end: return start
     # set-up
-    level = {start: 0}
+    levels = {start: 0}
     parents = {start: None}
-    n = 1
+    level = 1
     front = [start]  # this is the current frontier being explored
     while front:
         _next = []  # will be the next frontier
         for current_node in front:  # iterate over the nodes in the current frontier
             for neighbor in graph.neighbors(current_node):  # build the next frontier
                 # no revisiting
-                if neighbor not in level:
-                    level[neighbor] = n
+                if neighbor not in levels:
+                    levels[neighbor] = level
                     parents[neighbor] = current_node
                     # match
                     if neighbor == end: return retrieve_path(parents, end)
                     _next.append(neighbor)
         front = _next
-        n += 1
+        level += 1
     raise ValueError(f'node: {end} not reachable from node: {start}')

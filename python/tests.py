@@ -261,6 +261,15 @@ class TestDataAlgorithms(unittest.TestCase):
         graph = WGraph(graph)
         self.assertEqual(prim(graph), {(0, 1), (3, 2), (1, 3), (1, 4)})
 
+    def test_dinic(self):
+        graph = {0: [(2,5), (3,3)],
+                1: [(4,4)],
+                2: [(4,3), (1,3), (3,3)],
+                3: [(1,5)],
+                }
+        graph = NGraph(graph, 0, 4)
+        self.assertEqual(dinic(graph), 7)
+
     def test_welsh_powell(self):
         # https://en.wikipedia.org/wiki/Petersen_graph
         graph = {1: [5,6,2],

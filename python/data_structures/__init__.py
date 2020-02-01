@@ -16,5 +16,6 @@ from .fenwick_tree import FenwickTree
 from .graph import Graph
 from .wgraph import WGraph
 from .uwgraph import UWGraph
+from .network_graph import NGraph
 from .bit_mask import *
 from .disjoint_set import *

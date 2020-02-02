@@ -2,7 +2,7 @@
 https://www.youtube.com/watch?v=AfSk24UTFS8
 https://en.wikipedia.org/wiki/Graph_traversal#Depth-first_search
 """
-from data_structures import graph
+from data_structures import ugraph
 
 def retrieve_path(parents: dict, node):
     """returns the path from start to the given end
@@ -15,7 +15,7 @@ def retrieve_path(parents: dict, node):
     return path
 
 # stop once end from start is found
-def dfs(graph: graph.Graph, start, end) -> list:
+def dfs(graph: ugraph.UGraph, start, end) -> list:
     """returns when the first path is found from the start node to the end node
     creates the topological order first and the the path to node: end is retrived
     """

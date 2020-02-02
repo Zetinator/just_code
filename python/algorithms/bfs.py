@@ -2,7 +2,7 @@
 https://www.youtube.com/watch?v=s-CYnVz-uh4
 https://en.wikipedia.org/wiki/Breadth-first_search
 """
-from data_structures import graph
+from data_structures import ugraph
 
 def retrieve_path(parents: dict, node):
     """returns the path from start to the given end
@@ -14,7 +14,7 @@ def retrieve_path(parents: dict, node):
     path.reverse()
     return path
 
-def bfs(graph: graph.Graph, start, end) -> list:
+def bfs(graph: ugraph.UGraph, start, end) -> list:
     """returns when the first path is found from the start node to the end node
     """
     # special case: start = end

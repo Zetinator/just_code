@@ -1,4 +1,4 @@
-"""this is the implementation of an unweighted graph class
+"""this is the implementation of an unweighted and undirected graph class
 https://en.wikipedia.org/wiki/Graph_(abstract_data_type)#Operations
 the ADT contains the following methods:
     - adjacent
@@ -9,40 +9,37 @@ the ADT contains the following methods:
     - remove_edge
 """
 
-class Graph():
+class UGraph():
     def __init__(self, from_dictionary=None):
         self.inner = from_dictionary
-        self.nodes = []
+        self.nodes = set()
         self.edges = set()
-        self.generate_edges()
-        self.generate_nodes()
+        self.build()
 
-    def generate_nodes(self):
-        """generates a list of all the nodes between nodes
+    def __repr__(self):
+        return f'graph: {repr(self.inner)}'
+
+    def build(self):
+        """initialize edges, nodes and capacities
         """
         if not self.inner: return
         for node, neighbors in self.inner.items():
-            self.nodes.append(node)
-
-    def generate_edges(self):
-        """generates a list of all the edges between nodes
-        """
-        if not self.inner: return
-        for node, neighbors in self.inner.items():
+            self.nodes.add(node)
             for neighbor in neighbors:
+                self.nodes.add(neighbor)
                 self.edges.add((node, neighbor))
 
     def adjacent(self, x, y):
         """returns True if the two give nodes are adjacent, false otherwise
         """
         if x == None or y == None: return False
-        return (x, y) in self.edges
+        return (x, y) in self.edges or (y, x) in self.edges
 
-    def neighbors(self, x):
+    def neighbors(self, node):
         """returns a list of the neighbors of the given node
         """
-        if x == None or x not in self.inner: return []
-        return [neighbor for neighbor in self.inner[x]]
+        if node not in self.nodes: return []
+        return [tmp for tmp in self.inner.get(node, [])]
             
     def add_node(self, x):
         """adds a new node into the graph
@@ -67,6 +64,3 @@ class Graph():
         """
         if not (x, y) in self.edges: return
         del(self.edges[(x,y)])
-
-    def __repr__(self):
-        return repr(self.inner)

@@ -2,9 +2,9 @@
 https://visualgo.net/en/dfsbfs
 https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 """
-from data_structures import graph
+from data_structures import ugraph
 
-def tarjan(g: graph.Graph) -> list:
+def tarjan(g: ugraph.UGraph) -> list:
     """returns the strongly connected nodes in the given graph
     """
     # set-up

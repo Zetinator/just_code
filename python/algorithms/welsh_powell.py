@@ -3,9 +3,9 @@ a greedy algorithm for couloring graphs...
 https://en.wikipedia.org/wiki/Graph_coloring
 https://en.wikipedia.org/wiki/Graph_coloring#CITEREFWelshPowell1967
 """
-from data_structures import graph
+from data_structures import ugraph
 
-def welsh_powell(g: graph.Graph) -> list:
+def welsh_powell(g: ugraph.UGraph) -> list:
     """returns a color_map: color_map[node] -> color
     the rules are simple... no adjacent nodes can have the same color
     """

@@ -97,7 +97,7 @@ class TestDataStructures(unittest.TestCase):
                   "e" : ["c", "b"],
                   "f" : []
                 }
-        graph = Graph(graph)
+        graph = UGraph(graph)
         self.assertEqual(graph.neighbors('b'), ["c", "e"])
 
     def test_uwgraph(self):
@@ -170,7 +170,7 @@ class TestDataAlgorithms(unittest.TestCase):
                   "e" : ["c", "b"],
                   "f" : []
                 }
-        g = graph.Graph(g)
+        g = UGraph(g)
         self.assertEqual(dfs(g, 'a', 'b'), ['a', 'c', 'b'])
 
     def test_bfs(self):
@@ -181,7 +181,7 @@ class TestDataAlgorithms(unittest.TestCase):
                   "e" : ["c", "b"],
                   "f" : []
                 }
-        g = graph.Graph(g)
+        g = UGraph(g)
         self.assertEqual(bfs(g, 'a', 'e'), ['a', 'c', 'e'])
 
     def test_dijkstra(self):
@@ -248,7 +248,7 @@ class TestDataAlgorithms(unittest.TestCase):
                   6 : [4],
                   7 : [6],
                 }
-        graph = Graph(graph)
+        graph = UGraph(graph)
         self.assertEqual(tarjan(graph), [[6, 7, 5, 4], [2, 3, 1], [0]])
 
     def test_prim(self):
@@ -283,7 +283,7 @@ class TestDataAlgorithms(unittest.TestCase):
                 9 : [7,6,4],
                 10 : [5,7,8],
                 }
-        graph = Graph(graph)
+        graph = UGraph(graph)
         res = {1: 0, 2: 1, 3: 0, 4: 1, 5: 2, 6: 1, 7: 0, 8: 2, 9: 2, 10: 1}
         self.assertEqual(welsh_powell(graph), res)
 

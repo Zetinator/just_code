@@ -30,16 +30,16 @@ class VEB:
         def __repr__(self):
             return f'{(self.min, self.max)}u{self.u}'
 
-    def __init__(self, keys):
+    def __init__(self, keys=[], u=None):
         # find the size of universe (next power of 2 containing all the keys)
-        self.u, maximum = 2, max(keys)
+        self.u, maximum = 2, u or max(keys)
         while self.u < maximum: self.u = self.u<<1
         # build tree from root
         self.root = self.Node(self.u)
         self.build()
         # insert elements in the tree
-        # for key in keys:
-            # self.insert(key)
+        for key in keys:
+            self.insert(key)
 
     def build(self):
         """build tree top-down
@@ -95,7 +95,7 @@ class VEB:
             if node.min == x or node.max == x: return True
             # keep looking...
             if node.clusters: return r(node.clusters[high(x)], low(x))
-        return r(self.root, x)
+        return r(self.root, key)
 
     def insert(self, key):
         """insert a new key in the tree
@@ -118,21 +118,29 @@ class VEB:
     def successor(self, key):
         """returns the successor of the given key in the tree
         """
-        if x < node.min: return node.min
         # aux indexing functions
         high = lambda x: int(x//(self.u**(1/2)))
         low = lambda x: x % int(self.u**(1/2))
         def r(node, x):
+            print(f'current_node: {node}, key: {x}')
+            # easy case...
             if x < node.min: return node.min
+            # no successor availible...
+            if x > node.max: return node.u
             i, j = high(x), low(x)
-            if node.clusters and j < node.clusters[i].max:
+            # print(f'j: {j}, node.clusters[i].max: {node.clusters[i].max}')
+            if node.clusters and node.clusters[i].max and j < node.clusters[i].max:
                 # look in the corresponding cluster
+                print(f'search in the cluster: {node.clusters[i]}')
                 j = r(node.clusters[i], j)
             else:
-                # not there... look in the summary
-                i = r(node.summary, i)
-                j = node.clusters[i].min
+                # take a look in the summary first
+                print(f'take a look in the summary: {node.summary}')
+                i = r(node.summary, i) if node.summary else i
+                print(f'take a look in the cluster {i}: {node.clusters}')
+                j = node.clusters[i].min if node.clusters else j
             return i*int(node.u**(1/2)) + j
+        return r(self.root, key)
 
     def delete(self, x):
         """
@@ -171,4 +179,4 @@ class VEB:
 # test = [32, 3, 36, 26, 7, 46, 49, 52, 58]
 # test = [31, 3, 26, 7, 10]
 test = [15, 3, 10, 12, 5]
-veb = VEB(test)
+v = VEB(u=15, keys=test)

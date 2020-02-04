@@ -101,47 +101,52 @@ class VEB:
         """insert a new key in the tree
         """
         if not (0 <= key < self.u): raise ValueError(f'{key} out of universe')
-        # aux indexing functions
-        high = lambda x: int(x//(self.u**(1/2)))
-        low = lambda x: x % int(ceil(self.u**(1/2)))
         # insert recursively
         def r(node, x):
             # pseudo lazy propagation, makes the insertion log(log(U))
-            if not node.min: node.min = node.max = x; return
-            if node.min and x < node.min: x, node.min = node.min, x
-            if node.max and x > node.max: node.max = x
+            if node.min is None: node.min = node.max = x; return
+            if node.min is not None and x < node.min: x, node.min = node.min, x
+            if node.max is not None and x > node.max: node.max = x
+            # get cluster -> i (high) and offset -> j (low)
+            i = int(x//(node.u**(1/2)))
+            j = x % int(ceil(node.u**(1/2)))
             # update summary if the cluster was empty
-            i, j = high(x), low(x)
-            if node.clusters and not node.clusters[i].min: r(node.summary, i)
-            if node.clusters: r(node.clusters[i], j)
+            if node.clusters and node.clusters[i].min is None:
+                r(node.summary, i)
+            # update the corresponding cluster
+            if node.clusters:
+                r(node.clusters[i], j)
         return r(self.root, key)
 
     def successor(self, key):
         """returns the successor of the given key in the tree
         """
-        if self.root.min == None: return
-        # aux indexing functions
-        high = lambda x: int(x//(self.u**(1/2)))
-        low = lambda x: x % int(ceil(self.u**(1/2)))
-        def r(node, x):
-            print(f'current_node: {node}, key: {x}')
+        if self.root.min is None: return
+        def r(node, x, level=0):
+            print('  '*level + f'current_node: {node}')
+            print('  '*level + f'-----------------------------------------------------')
             # easy case...
             if x < node.min: return node.min
             # no successor availible...
-            if x > node.max: return node.u
-            i, j = high(x), low(x)
-            # print(f'j: {j}, node.clusters[i].max: {node.clusters[i].max}')
-            if node.clusters and node.clusters[i].max and j < node.clusters[i].max:
-                # look in the corresponding cluster
-                print(f'search in the cluster: {node.clusters[i]}')
-                j = r(node.clusters[i], j)
+            if x >= node.max: return node.u
+            # get cluster -> i (high) and offset -> j (low)
+            i = int(x//(node.u**(1/2)))
+            j = x % int(ceil(node.u**(1/2)))
+            print('  '*level + f'successor of key: {x}, in i: {i}, j: {j}')
+            # professor Erik Demaine was missing this next line...
+            if not node.clusters and j < node.max: return node.max
+            if node.clusters and node.clusters[i].max is not None and j < node.clusters[i].max:
+                # if key < max in the cluster for sure the successor can be found here
+                print('  '*level + f'j < node.clusters[i].max: {j} < {node.clusters[i].max}')
+                j = r(node.clusters[i], j, level+1)
             else:
                 # take a look in the summary first
-                print(f'take a look in the summary: {node.summary}')
-                i = r(node.summary, i) if node.summary else i
-                print(f'take a look in the cluster {i}: {node.clusters}')
+                print('  '*level + f'explore summary:')
+                i = r(node.summary, i, level+1) if node.summary else i
+                print('  '*level + f'new i collected from summary: {i}')
                 j = node.clusters[i].min if node.clusters else j
-            print(f'returning: i: {i}, j: {j}')
+                print('  '*level + f'new j collected from cluster:{i} min: {j}')
+            print('  '*level + f'returning: i: {i}, j: {j}')
             return i*int(node.u**(1/2)) + j
         return r(self.root, key)
 

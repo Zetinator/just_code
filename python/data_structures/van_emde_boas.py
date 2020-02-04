@@ -34,6 +34,7 @@ class VEB:
                     node.clusters[i] = self.Node(n)
                     r(node.clusters[i])
                 node.summary = self.Node(n)
+                r(node.summary)
         r(self.root)
 
 
@@ -42,15 +43,14 @@ class VEB:
         then print the summary trees recursively
         """
         main, summary = [], []
-        def r(node, level=0):
-            main.append('\t'*level + f'-->({node})')
+        def r(tmp, node, level=0):
+            tmp.append('\t'*level + f'-->({node})')
             if node.clusters:
-                summary.append('\t'*level + f'-->({node.summary})')
                 # go deeper...
                 n = len(node.clusters)
                 for i in range(n):
-                    r(node.clusters[i], level+1)
-        r(self.root)
+                    r(tmp, node.clusters[i], level+1)
+        r(main, self.root); r(summary, self.root.summary)
         main, summary = '\n'.join(main), '\n'.join(summary)
         return f'main tree:\n{main}\nsummary tree:\n{summary}'
 

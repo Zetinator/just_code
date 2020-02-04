@@ -17,9 +17,24 @@ class VEB:
         # find the size of universe (next power of 2 containing all the keys)
         self.u, maximum = 2, max(keys)
         while self.u < maximum: self.u = self.u<<1
+        # build tree from root
         self.root = self.Node(self.u)
-        for key in keys:
-            self.insert(key)
+        self.build()
+        # insert elements in the tree
+        # for key in keys:
+            # self.insert(key)
+
+    def build(self):
+        """build tree top-down
+        """
+        def r(node):
+            if node.clusters:
+                n = len(node.clusters)
+                for i in range(n):
+                    node.clusters[i] = self.Node(n)
+                    r(node.clusters[i])
+                node.summary = self.Node(n)
+        r(self.root)
 
     def __len__(self):
         return self.u
@@ -32,6 +47,7 @@ class VEB:
             # set-up: u, min, max
             self.u = u
             self.min = self.max = None
+            self.clusters = self.summary = None
             # if universe is not greater than 2 is enough to store min and max 
             if self.u <= 2: return
             # set clusters and summary

@@ -36,6 +36,24 @@ class VEB:
                 node.summary = self.Node(n)
         r(self.root)
 
+
+    def __repr__(self):
+        """print first the main tree and the clusters recursevly
+        then print the summary trees recursively
+        """
+        main, summary = [], []
+        def r(node, level=0):
+            main.append('\t'*level + f'-->({node})')
+            if node.clusters:
+                summary.append('\t'*level + f'-->({node.summary})')
+                # go deeper...
+                n = len(node.clusters)
+                for i in range(n):
+                    r(node.clusters[i], level+1)
+        r(self.root)
+        main, summary = '\n'.join(main), '\n'.join(summary)
+        return f'main tree:\n{main}\nsummary tree:\n{summary}'
+
     def __len__(self):
         return self.u
 
@@ -44,7 +62,7 @@ class VEB:
         each node has the same basic structure: u, min, max, summary, clusters
         """
         def __init__(self, u):
-            # set-up: u, min, max
+            # initial set-up: u, min, max
             self.u = u
             self.min = self.max = None
             self.clusters = self.summary = None
@@ -55,6 +73,9 @@ class VEB:
             n = ceil(self.u**(1/2))
             self.clusters = [None for _ in range(n)]
             self.summary = None
+
+        def __repr__(self):
+            return f'{(self.min, self.max)}u{self.u}'
 
     def min(self):
         """returns min in O(1)
@@ -150,5 +171,7 @@ class VEB:
             elif x == self.max:
                 self.max = self.index(self.high(x), self.clusters[self.high(x)].getMax())
 
-test = [32, 3, 36, 26, 7, 46, 49, 52, 58]
+# test = [32, 3, 36, 26, 7, 46, 49, 52, 58]
+# test = [31, 3, 26, 7, 10]
+test = [15, 3, 10, 12, 5]
 veb = VEB(test)

@@ -89,33 +89,30 @@ class VEB:
         # aux indexing functions
         high = lambda x: int(x//(self.u**(1/2)))
         low = lambda x: x % int(ceil(self.u**(1/2)))
-        # let's recurse, shall we?...
+        # search recursively
         def r(node, x):
-            print(f'node: {node}')
             if node.min == x or node.max == x: return True
-            # keep looking...
+            # don't give up... keep looking!
             if node.clusters: return r(node.clusters[high(x)], low(x))
         return r(self.root, key)
 
     def insert(self, key):
-        """insert a new key in the tree
+        """insert a new key in O(lg lg u)
         """
         if not (0 <= key < self.u): raise ValueError(f'{key} out of universe')
         # insert recursively
         def r(node, x):
             # pseudo lazy propagation, makes the insertion log(log(U))
             if node.min is None: node.min = node.max = x; return
-            if node.min is not None and x < node.min: x, node.min = node.min, x
-            if node.max is not None and x > node.max: node.max = x
+            if x < node.min: x, node.min = node.min, x
+            if x > node.max: node.max = x
             # get cluster -> i (high) and offset -> j (low)
             i = int(x//(node.u**(1/2)))
             j = x % int(ceil(node.u**(1/2)))
-            # update summary if the cluster was empty
-            if node.clusters and node.clusters[i].min is None:
-                r(node.summary, i)
+            # update summary if the corresponding cluster was empty
+            if node.clusters and node.clusters[i].min is None: r(node.summary, i)
             # update the corresponding cluster
-            if node.clusters:
-                r(node.clusters[i], j)
+            if node.clusters: r(node.clusters[i], j)
         return r(self.root, key)
 
     def successor(self, key):
@@ -123,30 +120,22 @@ class VEB:
         """
         if self.root.min is None: return
         def r(node, x, level=0):
-            print('  '*level + f'current_node: {node}')
-            print('  '*level + f'-----------------------------------------------------')
-            # easy case...
+            # trivial case
             if x < node.min: return node.min
             # no successor availible...
             if x >= node.max: return node.u
             # get cluster -> i (high) and offset -> j (low)
             i = int(x//(node.u**(1/2)))
             j = x % int(ceil(node.u**(1/2)))
-            print('  '*level + f'successor of key: {x}, in i: {i}, j: {j}')
             # professor Erik Demaine was missing this next line...
-            if not node.clusters and j < node.max: return node.max
+            if not node.clusters and x < node.max: return node.max
             if node.clusters and node.clusters[i].max is not None and j < node.clusters[i].max:
                 # if key < max in the cluster for sure the successor can be found here
-                print('  '*level + f'j < node.clusters[i].max: {j} < {node.clusters[i].max}')
                 j = r(node.clusters[i], j, level+1)
             else:
                 # take a look in the summary first
-                print('  '*level + f'explore summary:')
                 i = r(node.summary, i, level+1) if node.summary else i
-                print('  '*level + f'new i collected from summary: {i}')
                 j = node.clusters[i].min if node.clusters else j
-                print('  '*level + f'new j collected from cluster:{i} min: {j}')
-            print('  '*level + f'returning: i: {i}, j: {j}')
             return i*int(node.u**(1/2)) + j
         return r(self.root, key)
 

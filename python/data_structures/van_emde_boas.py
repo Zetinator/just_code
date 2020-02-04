@@ -13,6 +13,23 @@ the ADT contains the following methods:
 class VEB:
     """this data structurethis data structure allows log(log(U)) computations on integer keys
     """
+    class Node():
+        """Node basic chainable storage unit
+        each node has the same basic structure: u, min, max, summary, clusters
+        """
+        def __init__(self, u):
+            # initial set-up: u, min, max
+            self.u = u
+            self.min = self.max = None
+            # set clusters and summary
+            ceil = lambda x: -int(-(x)//1)
+            n = ceil(self.u**(1/2))
+            # if universe is not greater than 2 is enough to store min and max 
+            self.clusters = [None for _ in range(n)] if self.u > 2 else []
+            self.summary = None
+        def __repr__(self):
+            return f'{(self.min, self.max)}u{self.u}'
+
     def __init__(self, keys):
         # find the size of universe (next power of 2 containing all the keys)
         self.u, maximum = 2, max(keys)
@@ -27,7 +44,9 @@ class VEB:
     def build(self):
         """build tree top-down
         """
+        # build recursively...
         def r(node):
+            if not node: return
             if node.clusters:
                 n = len(node.clusters)
                 for i in range(n):
@@ -37,45 +56,23 @@ class VEB:
                 r(node.summary)
         r(self.root)
 
-
     def __repr__(self):
         """print first the main tree and the clusters recursevly
-        then print the summary trees recursively
+        then print the summary tree recursively
         """
         main, summary = [], []
         def r(tmp, node, level=0):
-            tmp.append('\t'*level + f'-->({node})')
-            if node.clusters:
-                # go deeper...
-                n = len(node.clusters)
-                for i in range(n):
-                    r(tmp, node.clusters[i], level+1)
+            if not node: return
+            tmp.append('\t'*level + f'-->{node}')
+            for cluster in node.clusters:
+                r(tmp, cluster, level+1)
+        # recurse on both the main and the summary tree
         r(main, self.root); r(summary, self.root.summary)
         main, summary = '\n'.join(main), '\n'.join(summary)
-        return f'main tree:\n{main}\nsummary tree:\n{summary}'
+        return f'main:\n{main}\nsummary:\n{summary}'
 
     def __len__(self):
         return self.u
-
-    class Node():
-        """Node basic chainable storage unit
-        each node has the same basic structure: u, min, max, summary, clusters
-        """
-        def __init__(self, u):
-            # initial set-up: u, min, max
-            self.u = u
-            self.min = self.max = None
-            self.clusters = self.summary = None
-            # if universe is not greater than 2 is enough to store min and max 
-            if self.u <= 2: return
-            # set clusters and summary
-            ceil = lambda x: -int(-(x)//1)
-            n = ceil(self.u**(1/2))
-            self.clusters = [None for _ in range(n)]
-            self.summary = None
-
-        def __repr__(self):
-            return f'{(self.min, self.max)}u{self.u}'
 
     def min(self):
         """returns min in O(1)

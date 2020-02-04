@@ -9,7 +9,7 @@ the ADT contains the following methods:
     - delete: delete the given value from the tree
     - successor: return the next in order successor
 """
-
+from math import ceil
 class VEB:
     """this data structurethis data structure allows log(log(U)) computations on integer keys
     """
@@ -22,8 +22,7 @@ class VEB:
             self.u = u
             self.min = self.max = None
             # set clusters and summary
-            ceil = lambda x: -int(-(x)//1)
-            n = ceil(self.u**(1/2))
+            n = int(self.u**(1/2))
             # if universe is not greater than 2 is enough to store min and max 
             self.clusters = [None for _ in range(n)] if self.u > 2 else []
             self.summary = None
@@ -89,9 +88,10 @@ class VEB:
         """
         # aux indexing functions
         high = lambda x: int(x//(self.u**(1/2)))
-        low = lambda x: x % int(self.u**(1/2))
+        low = lambda x: x % int(ceil(self.u**(1/2)))
         # let's recurse, shall we?...
         def r(node, x):
+            print(f'node: {node}')
             if node.min == x or node.max == x: return True
             # keep looking...
             if node.clusters: return r(node.clusters[high(x)], low(x))
@@ -100,9 +100,10 @@ class VEB:
     def insert(self, key):
         """insert a new key in the tree
         """
+        if not (0 <= key < self.u): raise ValueError(f'{key} out of universe')
         # aux indexing functions
         high = lambda x: int(x//(self.u**(1/2)))
-        low = lambda x: x % int(self.u**(1/2))
+        low = lambda x: x % int(ceil(self.u**(1/2)))
         # insert recursively
         def r(node, x):
             # pseudo lazy propagation, makes the insertion log(log(U))
@@ -118,9 +119,10 @@ class VEB:
     def successor(self, key):
         """returns the successor of the given key in the tree
         """
+        if self.root.min == None: return
         # aux indexing functions
         high = lambda x: int(x//(self.u**(1/2)))
-        low = lambda x: x % int(self.u**(1/2))
+        low = lambda x: x % int(ceil(self.u**(1/2)))
         def r(node, x):
             print(f'current_node: {node}, key: {x}')
             # easy case...
@@ -139,6 +141,7 @@ class VEB:
                 i = r(node.summary, i) if node.summary else i
                 print(f'take a look in the cluster {i}: {node.clusters}')
                 j = node.clusters[i].min if node.clusters else j
+            print(f'returning: i: {i}, j: {j}')
             return i*int(node.u**(1/2)) + j
         return r(self.root, key)
 
@@ -179,4 +182,7 @@ class VEB:
 # test = [32, 3, 36, 26, 7, 46, 49, 52, 58]
 # test = [31, 3, 26, 7, 10]
 test = [15, 3, 10, 12, 5]
-v = VEB(u=15, keys=test)
+test = [1,3,5,7]
+test = [1,2,3,5,8,10]
+test = [2,3,4,5,7,14,15]
+v = VEB(u=16, keys=test)

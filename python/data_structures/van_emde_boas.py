@@ -113,14 +113,14 @@ class VEB:
             i = int(x//(node.u**(1/2)))
             j = x % int(ceil(node.u**(1/2)))
             # professor Erik Demaine was missing this next line...
-            if not node.clusters and x < node.max: return node.max
-            if node.clusters and node.clusters[i].max is not None and j < node.clusters[i].max:
+            if not node.u > 2 and x < node.max: return node.max
+            if node.u > 2 and i in node.clusters and j < node.clusters[i].max:
                 # if key < max in the cluster for sure the successor can be found here
                 j = r(node.clusters[i], j)
             else:
                 # take a look in the summary first
-                i = r(node.summary, i) if node.summary else i
-                j = node.clusters[i].min if node.clusters else j
+                i = r(node.summary, i)
+                j = node.clusters[i].min
             return i*int(node.u**(1/2)) + j
         return r(self.root, key)
 

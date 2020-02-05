@@ -84,7 +84,7 @@ class VEB:
         return self.root.max
 
     def search(self, key):
-        """find key in the tree in O(lg lg u)
+        """find key in the tree in O(log log u)
         """
         # aux indexing functions
         high = lambda x: int(x//(self.u**(1/2)))
@@ -97,7 +97,7 @@ class VEB:
         return r(self.root, key)
 
     def insert(self, key):
-        """insert a new key in O(lg lg u)
+        """insert a new key in O(log log u)
         """
         if not (0 <= key < self.u): raise ValueError(f'{key} out of universe')
         # insert recursively
@@ -119,7 +119,7 @@ class VEB:
         """returns the successor of the given key in the tree
         """
         if self.root.min is None: return
-        def r(node, x, level=0):
+        def r(node, x):
             # trivial case
             if x < node.min: return node.min
             # no successor availible...
@@ -131,47 +131,46 @@ class VEB:
             if not node.clusters and x < node.max: return node.max
             if node.clusters and node.clusters[i].max is not None and j < node.clusters[i].max:
                 # if key < max in the cluster for sure the successor can be found here
-                j = r(node.clusters[i], j, level+1)
+                j = r(node.clusters[i], j)
             else:
                 # take a look in the summary first
-                i = r(node.summary, i, level+1) if node.summary else i
+                i = r(node.summary, i) if node.summary else i
                 j = node.clusters[i].min if node.clusters else j
             return i*int(node.u**(1/2)) + j
         return r(self.root, key)
 
-    def delete(self, x):
+    def delete(self, key):
+        """deletes an element x in the tree in O(log log U)
         """
-        Deletes an element x in the universe of size u
-        """
-        if self.min == self.max:
-            self.min = None
-            self.max = None
-        elif self.u == 2:
-            if x == 0:
-                self.min = 1
-            else:
-                self.min = 0
-
-            self.max = self.min
-        else:
-            if x == self.min:
-                first_cluster = self.summary.getMin()
-                x = self.index(first_cluster, self.clusters[first_cluster].getMin())
-                self.min = x
-
-            self.clusters[self.high(x)].delete(self.low(x))
-
-            if self.clusters[self.high(x)].getMin() is None:
-                self.summary.delete(self.high(x))
-
-                if x == self.max:
-                    summary_max = self.summary.getMax()
-                    if summary_max is None:
-                        self.max = self.min
-                    else:
-                        self.max = self.index(summary_max, self.clusters[summary_max].getMax())
-            elif x == self.max:
-                self.max = self.index(self.high(x), self.clusters[self.high(x)].getMax())
+        if self.root.min is None: return
+        # delete recursively
+        def r(node, x, level=0):
+            # get cluster -> i (high) and offset -> j (low)
+            i = int(x//(node.u**(1/2)))
+            j = x % int(ceil(node.u**(1/2)))
+            print('  '*level + f'current_node: {node}')
+            print('  '*level + f'successor of key: {x}, in i: {i}, j: {j}')
+            # special case: erasing min
+            if x == node.min:
+                print('  '*level + f'x: {x} == node.min: {node.min}')
+                if not node.summary or node.summary.min is None:
+                    node.min = node.max = None; return
+                print('  '*level + f'{node.min} -> {i*int(node.u**(1/2)) + node.clusters[i].min}')
+                x = node.min = i*int(node.u**(1/2)) + node.clusters[i].min
+                print('  '*level + f'changed')
+            # simetrical with respect to insert
+            if node.clusters: r(node.clusters[i], j, level+1)
+            # is the cluster is empty, update the summary
+            if node.clusters and node.clusters[i].min is None: r(node.summary, i, level+1)
+            # special case: erasing max
+            if x == node.max:
+                print('  '*level + f'x: {x} == node.max: {node.max}')
+                if not node.summary or node.summary.max is None:
+                    node.max = node.min; return
+                print('  '*level + f'summary: {node.summary}')
+                i = node.summary.max
+                node.max = i*int(node.u**(1/2)) + node.clusters[i].max
+        return r(self.root, key)
 
 # test = [32, 3, 36, 26, 7, 46, 49, 52, 58]
 # test = [31, 3, 26, 7, 10]

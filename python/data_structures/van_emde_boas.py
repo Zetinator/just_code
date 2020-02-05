@@ -131,11 +131,12 @@ class VEB:
         # delete recursively
         def r(node, x):
             # base case: we reached a node with a single element
-            if node.min == node.max: node.min = node.max = None; return
+            # return a signal to the parent to erase this empty child
+            if node.min == node.max: return True
             # special case: erasing min
             if x == node.min:
                 # we dont want to recurse into a node with no summary...
-                if not node.clusters: node.min = node.max; return
+                if not node.u > 2: node.min = node.max; return
                 tmp = node.summary.min
                 # new min discovered, update
                 x = node.min = tmp*int(node.u**(1/2)) + node.clusters[tmp].min
@@ -143,16 +144,20 @@ class VEB:
             i = int(x//(node.u**(1/2)))
             j = x % int(ceil(node.u**(1/2)))
             # simetrical with respect to insert, we delete first
-            if node.clusters: r(node.clusters[i], j)
+            if node.u > 2 and i in node.clusters:
+                if r(node.clusters[i], j): del(node.clusters[i])
             # then if is the cluster is empty, update the summary
-            if node.clusters and node.clusters[i].min is None: r(node.summary, i)
+            if node.u > 2 and i not in node.clusters: r(node.summary, i)
             # special case: erasing max, very similar to the min case
             if x == node.max:
-                if not node.summary or node.summary.max is None:
-                    node.max = node.min; return
+                if not node.clusters:
+                    node.max = node.min
+                    node.summary = None
+                    return
                 tmp = node.summary.max
-                node.max = tmp*int(node.u**(1/2)) + node.clusters[tmp].max
-        return r(self.root, key)
+                if tmp in node.clusters:
+                    node.max = tmp*int(node.u**(1/2)) + node.clusters[tmp].max
+        if r(self.root, key): self.root = self.Node(self.root.u)
 
 # test = [32, 3, 36, 26, 7, 46, 49, 52, 58]
 # test = [31, 3, 26, 7, 10]

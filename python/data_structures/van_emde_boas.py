@@ -13,10 +13,12 @@ the ADT contains the following methods:
     - max: returns the max element in O(1)
     - delete: delete the given value from the tree in O(lg lg U)
     - successor: return the next in order successor in O(lg lg U)
+
+usage example:
+     v = VEB([33, 66, 1, 65, 5, 7, 41])
+     v = VEB(u=16, keys=[1,3,5,11])
 """
 class VEB:
-    """this data structurethis data structure allows log(log(U)) computations on integer keys
-    """
     class Node():
         """Node basic chainable storage unit
         each node has the same basic structure: u, min, max, summary, clusters
@@ -44,8 +46,7 @@ class VEB:
             self.insert(key)
 
     def __repr__(self):
-        """print first the main tree and the clusters recursevly
-        then print the summary tree recursively
+        """print first the main and summary trees recursevly
         """
         main, summary = [], []
         def r(tmp, node, level=0):

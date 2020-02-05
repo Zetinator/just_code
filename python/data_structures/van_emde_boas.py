@@ -144,32 +144,29 @@ class VEB:
         """
         if self.root.min is None: return
         # delete recursively
-        def r(node, x, level=0):
+        def r(node, x):
+            # base case: we reached a node with a single element
+            if node.min == node.max: node.min = node.max = None; return
+            # special case: erasing min
+            if x == node.min:
+                # we dont want to recurse into a node with no summary...
+                if not node.clusters: node.min = node.max; return
+                tmp = node.summary.min
+                # new min discovered, update
+                x = node.min = tmp*int(node.u**(1/2)) + node.clusters[tmp].min
             # get cluster -> i (high) and offset -> j (low)
             i = int(x//(node.u**(1/2)))
             j = x % int(ceil(node.u**(1/2)))
-            print('  '*level + f'current_node: {node}')
-            print('  '*level + f'successor of key: {x}, in i: {i}, j: {j}')
-            # special case: erasing min
-            if x == node.min:
-                print('  '*level + f'x: {x} == node.min: {node.min}')
-                if not node.summary or node.summary.min is None:
-                    node.min = node.max = None; return
-                print('  '*level + f'{node.min} -> {i*int(node.u**(1/2)) + node.clusters[i].min}')
-                x = node.min = i*int(node.u**(1/2)) + node.clusters[i].min
-                print('  '*level + f'changed')
-            # simetrical with respect to insert
-            if node.clusters: r(node.clusters[i], j, level+1)
-            # is the cluster is empty, update the summary
-            if node.clusters and node.clusters[i].min is None: r(node.summary, i, level+1)
-            # special case: erasing max
+            # simetrical with respect to insert, we delete first
+            if node.clusters: r(node.clusters[i], j)
+            # then if is the cluster is empty, update the summary
+            if node.clusters and node.clusters[i].min is None: r(node.summary, i)
+            # special case: erasing max, very similar to the min case
             if x == node.max:
-                print('  '*level + f'x: {x} == node.max: {node.max}')
                 if not node.summary or node.summary.max is None:
                     node.max = node.min; return
-                print('  '*level + f'summary: {node.summary}')
-                i = node.summary.max
-                node.max = i*int(node.u**(1/2)) + node.clusters[i].max
+                tmp = node.summary.max
+                node.max = tmp*int(node.u**(1/2)) + node.clusters[tmp].max
         return r(self.root, key)
 
 # test = [32, 3, 36, 26, 7, 46, 49, 52, 58]

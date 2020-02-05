@@ -5,6 +5,7 @@ from .treap import Treap
 from .splay_tree import SplayTree
 from .max_heap import Heap
 from .segment_tree import ST
+from .van_emde_boas import VEB
 from .linked_list import LinkedList
 from .skip_list import SkipList
 from .double_linked_list import DoubleLinkedList

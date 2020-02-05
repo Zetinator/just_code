@@ -1,15 +1,19 @@
 """custom implementation of a van emde boas tree with the purpose of practice
 
+This one uses hash tables to achive O(n*log(log(U))) efficiency, instead of the original O(U)
+where: n is the number of elements in the tree, and U is the size of the 'universe'
+
 https://www.youtube.com/watch?v=hmReJCupbNU&t=1838s
 https://en.wikipedia.org/wiki/Van_Emde_Boas_tree
 
 the ADT contains the following methods:
-    - insert: insert a new node in the tree
-    - search: return the node with the given value
-    - delete: delete the given value from the tree
-    - successor: return the next in order successor
+    - insert: insert a new node in the tree in O(lg lg u)
+    - search: return the node with the given value in O(lg lg u)
+    - min: return the min element in O(1)
+    - max: returns the max element in O(1)
+    - delete: delete the given value from the tree in O(lg lg U)
+    - successor: return the next in order successor in O(lg lg U)
 """
-from math import ceil
 class VEB:
     """this data structurethis data structure allows log(log(U)) computations on integer keys
     """
@@ -19,7 +23,9 @@ class VEB:
         """
         def __init__(self, u):
             # initial set-up: u, min, max
-            self.u = u
+            self.u = 2
+            # find the size of universe (next power of 2 containing all the keys)
+            while self.u < u: self.u = self.u<<1
             self.min = self.max = None
             # set clusters and summary
             self.clusters = {}
@@ -71,9 +77,9 @@ class VEB:
         # search recursively
         def r(node, x):
             if node.min == x or node.max == x: return True
-            # aux indexing functions
-            i = int(x//(node.u**(1/2)))
-            j = x % int(ceil(node.u**(1/2)))
+            # get cluster -> i (high) and offset -> j (low)
+            i = x//int(node.u**(1/2))
+            j = x % int(node.u**(1/2))
             # don't give up... keep looking!
             if i in node.clusters: return r(node.clusters[i], j)
         return r(self.root, key)
@@ -89,8 +95,8 @@ class VEB:
             if x < node.min: x, node.min = node.min, x
             if x > node.max: node.max = x
             # get cluster -> i (high) and offset -> j (low)
-            i = int(x//(node.u**(1/2)))
-            j = x % int(ceil(node.u**(1/2)))
+            i = x//int(node.u**(1/2))
+            j = x % int(node.u**(1/2))
             u = int(node.u**(1/2))
             # update summary if the corresponding cluster was empty
             if node.u > 2 and i not in node.clusters:
@@ -110,8 +116,8 @@ class VEB:
             # no successor availible...
             if x >= node.max: return node.u
             # get cluster -> i (high) and offset -> j (low)
-            i = int(x//(node.u**(1/2)))
-            j = x % int(ceil(node.u**(1/2)))
+            i = x//int(node.u**(1/2))
+            j = x % int(node.u**(1/2))
             # professor Erik Demaine was missing this next line...
             if not node.u > 2 and x < node.max: return node.max
             if node.u > 2 and i in node.clusters and j < node.clusters[i].max:
@@ -141,8 +147,8 @@ class VEB:
                 # new min discovered, update
                 x = node.min = tmp*int(node.u**(1/2)) + node.clusters[tmp].min
             # get cluster -> i (high) and offset -> j (low)
-            i = int(x//(node.u**(1/2)))
-            j = x % int(ceil(node.u**(1/2)))
+            i = x//int(node.u**(1/2))
+            j = x % int(node.u**(1/2))
             # simetrical with respect to insert, we delete first
             if node.u > 2 and i in node.clusters:
                 if r(node.clusters[i], j): del(node.clusters[i])
@@ -158,11 +164,3 @@ class VEB:
                 if tmp in node.clusters:
                     node.max = tmp*int(node.u**(1/2)) + node.clusters[tmp].max
         if r(self.root, key): self.root = self.Node(self.root.u)
-
-# test = [32, 3, 36, 26, 7, 46, 49, 52, 58]
-# test = [31, 3, 26, 7, 10]
-test = [15, 3, 10, 12, 5]
-test = [1,3,5,7]
-test = [1,2,3,5,8,10]
-test = [2,3,4,5,7,14,15]
-v = VEB(u=16, keys=test)

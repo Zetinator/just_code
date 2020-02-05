@@ -24,6 +24,11 @@ class TestDataStructures(unittest.TestCase):
         splay = Treap(test)
         self.assertEqual(splay.search(93).value, 93)
 
+    def test_van_emde_boas(self):
+        test = [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]
+        veb = VEB(test)
+        self.assertEqual(veb.successor(85), 93)
+
     def test_bst(self):
         test = [33, 66, 1, 65, 5, 7, 41, 74, 11, 45, 14, 60, 48, 84, 85, 31, 93, 63]
         bst = BST(test)

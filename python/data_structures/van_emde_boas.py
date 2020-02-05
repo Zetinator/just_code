@@ -22,9 +22,7 @@ class VEB:
             self.u = u
             self.min = self.max = None
             # set clusters and summary
-            n = int(self.u**(1/2))
-            # if universe is not greater than 2 is enough to store min and max 
-            self.clusters = [None for _ in range(n)] if self.u > 2 else []
+            self.clusters = {}
             self.summary = None
         def __repr__(self):
             return f'{(self.min, self.max)}u{self.u}'
@@ -35,25 +33,9 @@ class VEB:
         while self.u < maximum: self.u = self.u<<1
         # build tree from root
         self.root = self.Node(self.u)
-        self.build()
         # insert elements in the tree
         for key in keys:
             self.insert(key)
-
-    def build(self):
-        """build tree top-down
-        """
-        # build recursively...
-        def r(node):
-            if not node: return
-            if node.clusters:
-                n = len(node.clusters)
-                for i in range(n):
-                    node.clusters[i] = self.Node(n)
-                    r(node.clusters[i])
-                node.summary = self.Node(n)
-                r(node.summary)
-        r(self.root)
 
     def __repr__(self):
         """print first the main tree and the clusters recursevly
@@ -63,7 +45,7 @@ class VEB:
         def r(tmp, node, level=0):
             if not node: return
             tmp.append('\t'*level + f'-->{node}')
-            for cluster in node.clusters:
+            for k, cluster in node.clusters.items():
                 r(tmp, cluster, level+1)
         # recurse on both the main and the summary tree
         r(main, self.root); r(summary, self.root.summary)
@@ -86,14 +68,14 @@ class VEB:
     def search(self, key):
         """find key in the tree in O(log log u)
         """
-        # aux indexing functions
-        high = lambda x: int(x//(self.u**(1/2)))
-        low = lambda x: x % int(ceil(self.u**(1/2)))
         # search recursively
         def r(node, x):
             if node.min == x or node.max == x: return True
+            # aux indexing functions
+            i = int(x//(node.u**(1/2)))
+            j = x % int(ceil(node.u**(1/2)))
             # don't give up... keep looking!
-            if node.clusters: return r(node.clusters[high(x)], low(x))
+            if i in node.clusters: return r(node.clusters[i], j)
         return r(self.root, key)
 
     def insert(self, key):
@@ -109,10 +91,13 @@ class VEB:
             # get cluster -> i (high) and offset -> j (low)
             i = int(x//(node.u**(1/2)))
             j = x % int(ceil(node.u**(1/2)))
+            u = int(node.u**(1/2))
             # update summary if the corresponding cluster was empty
-            if node.clusters and node.clusters[i].min is None: r(node.summary, i)
+            if node.u > 2 and i not in node.clusters:
+                if not node.summary: node.summary = self.Node(u)
+                r(node.summary, i)
             # update the corresponding cluster
-            if node.clusters: r(node.clusters[i], j)
+            if node.u > 2: r(node.clusters.setdefault(i, self.Node(u)), j)
         return r(self.root, key)
 
     def successor(self, key):

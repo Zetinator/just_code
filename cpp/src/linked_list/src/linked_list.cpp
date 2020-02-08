@@ -19,17 +19,17 @@ LinkedList<T>::LinkedList(const std::vector<T>& data) {
 template<typename T>
 void LinkedList<T>::append(const T& key) {
 	if(!this->head){
-		this->head = new Node<T>(key);
+		this->head = std::shared_ptr<Node<T>>(new Node<T>(key));
 		return;
 	}
 	auto node = this->head;
 	while(node->next)
 		node = node->next;
-	node->next = new Node<T>(key);
+	node->next = std::shared_ptr<Node<T>>(new Node<T>(key));
 }
 
 template<typename T>
-Node<T>* LinkedList<T>::search(const T& key) {
+std::shared_ptr<Node<T>> LinkedList<T>::search(const T& key) {
 	if(!this->head)
 		return nullptr;
 	auto node = this->head;
@@ -45,13 +45,13 @@ template<typename T>
 void LinkedList<T>::insert(const T& key, int index) {
 	//special case: empty list
 	if(!this->head){
-		this->head = new Node<T>(key);
+		this->head = std::shared_ptr<Node<T>>(new Node<T>(key));
 		return;
 	}
 	//special case: insert as head
 	if(index == 0){
 		auto tmp = this->head;
-		this->head = new Node<T>(key);
+		this->head = std::shared_ptr<Node<T>>(new Node<T>(key));
 		this->head->next = tmp;
 		return;
 	}
@@ -62,7 +62,7 @@ void LinkedList<T>::insert(const T& key, int index) {
 		index -= 1;
 	}
 	auto tmp = node->next;
-	node->next = new Node<T>(key);
+	node->next = std::shared_ptr<Node<T>>(new Node<T>(key));
 	node->next->next = tmp;
 }
 

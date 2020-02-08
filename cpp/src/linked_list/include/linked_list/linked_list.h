@@ -24,7 +24,8 @@ class LinkedList {
 	public:
 		void append(const T& key);
 		Node<T>* search(const T& key);
-		void insert (const T& key);
+		void insert (const T& key, int index);
+		void erase(const T& key);
 		void traverse();
 };
 

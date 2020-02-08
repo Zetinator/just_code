@@ -42,13 +42,42 @@ Node<T>* LinkedList<T>::search(const T& key) {
 }
 
 template<typename T>
-void LinkedList<T>::insert(const T& key) {
+void LinkedList<T>::insert(const T& key, int index) {
+	//special case: empty list
+	if(!this->head){
+		this->head = new Node<T>(key);
+		return;
+	}
+	//special case: insert as head
+	if(index == 0){
+		auto tmp = this->head;
+		this->head = new Node<T>(key);
+		this->head->next = tmp;
+		return;
+	}
+	//general case:
+	auto node = this->head;
+	while(node->next && (index-1) > 0){
+		node = node->next;
+		index -= 1;
+	}
+	auto tmp = node->next;
+	node->next = new Node<T>(key);
+	node->next->next = tmp;
+}
+
+template<typename T>
+void LinkedList<T>::erase(const T& key) {
+	//special case: empty list
 	if(!this->head)
 		return;
+	//general case:
 	auto node = this->head;
-	while(node){
-		if(node->value == key)
+	while(node) {
+		if(node->value == key) {
+			*node = *(node->next);
 			return;
+		}
 		node = node->next;
 	}
 	return;
@@ -86,5 +115,13 @@ int main(int argc, char const *argv[])
 	auto node = linked.search(4);
 	if(node)
 		std::cout << "found: " << std::to_string(node->value) << std::endl;
+	int key = 69, index = 0;
+	std::cout << "insert(" << key << " , " << index << ")" << std::endl;
+	linked.insert(key, index);
+	linked.traverse();
+	key = 7;
+	std::cout << "erase(" << key << ")" << std::endl;
+	linked.erase(key);
+	linked.traverse();
 	return 0;
 }

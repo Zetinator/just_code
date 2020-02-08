@@ -14,17 +14,15 @@ class Node {
 		Node<T>* next;
 };
 
-//template<typename T>
-//class LinkedList {
-	//private:
-		//Node head;
-	//public:
-		//LinkedList(std::vector<T> data);
-		//operator std::string();
-		//Node insert();
-		//Node search();
-		//void erase();
-//};
+template<typename T>
+class LinkedList {
+	private:
+		Node<T> head;
+	public:
+		LinkedList();
+		LinkedList(int _data);
+		LinkedList(std::vector<T> _data);
+};
 
 } // namespace Node
 

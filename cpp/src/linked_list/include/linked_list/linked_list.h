@@ -20,10 +20,11 @@ class LinkedList {
 		Node<T>* head = nullptr;
 	public:
 		LinkedList();
-		//LinkedList(std::vector<T>& _data);
+		LinkedList(const std::vector<T>& _data);
 	public:
-		void append(T& key);
-		Node<T>* search(T& key);
+		void append(const T& key);
+		Node<T>* search(const T& key);
+		void insert (const T& key);
 		void traverse();
 };
 

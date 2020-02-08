@@ -4,13 +4,15 @@ namespace linked_list
 {
 
 template<typename T>
-LinkedList<T>::LinkedList(std::vector<T> data) {
-	for(auto e: data)
-		std::cout << std::to_string(e) << std::endl;
-	//Node* head();
-}
+Node<T>::Node(T _value): value(_value) {}
 
-} // namespace Node
+//template<typename T>
+//LinkedList<T>::LinkedList(std::vector<T> data) {
+	//for(auto e: data)
+		//std::cout << std::to_string(e) << std::endl;
+//}
+
+} // namespace linked_list
 
 // only here for testing
 int main(int argc, char const *argv[])
@@ -22,8 +24,10 @@ int main(int argc, char const *argv[])
 		return 1;
 	}
 
-	std::vector<int> test = {1, 2, 3, 4, 5};
-	auto node = linked_list::LinkedList<int>(test);
+	//std::vector<int> test = {1, 2, 3, 4, 5};
+	//auto list = linked_list::LinkedList<int>(test);
+	auto node = linked_list::Node<int>(69);
 	std::cout << argv[1] << " quiere mucho a su marion :(" << std::endl;
+	std::cout << "print node: " << std::to_string(node.value) << std::endl;
 	return 0;
 }

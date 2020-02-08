@@ -7,19 +7,51 @@ template<typename T>
 Node<T>::Node(T _value): value(_value) {}
 
 template<typename T>
-LinkedList<T>::LinkedList(int data) {
-	auto node = Node<int>(data);
-	head = &node;
-	
-	if(!head)
-		std::cout << "si, esta bien..." << std::endl;
-	if(head)
-		std::cout << "head: " << head->value << std::endl;
-}
+LinkedList<T>::LinkedList() {}
+
+//template<typename T>
 //LinkedList<T>::LinkedList(std::vector<T> data) {
 	//for(auto e: data)
-		//std::cout << "inserting: " << std::to_string(e) << std::endl;
+		//this->insert(e);
 //}
+
+
+template<typename T>
+void LinkedList<T>::append(T& key) {
+	if(!head){
+		head = new Node<T>(key);
+		return;
+	}
+	auto node = head;
+	while(node->next)
+		node = node->next;
+	node->next = new Node<T>(key);
+}
+
+template<typename T>
+Node<T>* LinkedList<T>::search(T& key) {
+	if(!head)
+		return nullptr;
+	auto node = head;
+	while(node){
+		if(node->value == key)
+			return node;
+		node = node->next;
+	}
+	return nullptr;
+}
+
+template<typename T>
+void LinkedList<T>::traverse() {
+	if(!head)
+		return;
+	auto node = head;
+	while(node){
+		std::cout << "->(" + std::to_string(node->value) << ")";
+		node = node->next;
+	}
+	std::cout << std::endl;
+}
 
 } // namespace linked_list
 
@@ -34,7 +66,16 @@ int main(int argc, char const *argv[])
 	}
 
 	int test = 69;
-	auto list = linked_list::LinkedList<int>(test);
+	auto linked = linked_list::LinkedList<int>();
+	linked.append(test);
+	test = 117;
+	linked.append(test);
+	test = 72;
+	linked.append(test);
+	linked.traverse();
+	auto node = linked.search(test);
+	if(node)
+		std::cout << "found: " << std::to_string(node->value) << std::endl;
 	//std::vector<int> test = {1, 2, 3, 4, 5};
 	//auto list = linked_list::LinkedList<int>(test);
 	//auto node = linked_list::Node<int>(69);

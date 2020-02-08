@@ -6,15 +6,14 @@ namespace linked_list
 template<typename T>
 class LinkedList {
 	private:
-		class Node;
-		Node<T> head;
+		struct Node {T value; Node* next;};
+		Node head;
 	public:
 		LinkedList(std::vector<T> data);
-		~LinkedList();
 		// print operator
 		operator std::string();
-		Node<T> insert();
-		Node<T> search();
+		Node insert();
+		Node search();
 		void erase();
 };
 

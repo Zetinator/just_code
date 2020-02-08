@@ -4,22 +4,10 @@ namespace linked_list
 {
 
 template<typename T>
-class LinkedList<T>::Node {
-	//basic chainable unit
-	private:
-		T value;
-		Node* next;
-	public:
-		Node(const T& _value): value(_value), next(nullptr_t){};
-		~Node();
-		// print operator
-		operator std::string(){return std::string(value);};
-};
-
-template<typename T>
-//LinkedList<T>::LinkedList(std::vector<T> data) {
-LinkedList<T>::LinkedList(uint32_t _value) {
-	Node* head(_value);
+LinkedList<T>::LinkedList(std::vector<T> data) {
+	for(auto e: data)
+		std::cout << std::to_string(e) << std::endl;
+	//Node* head();
 }
 
 } // namespace Node
@@ -34,8 +22,8 @@ int main(int argc, char const *argv[])
 		return 1;
 	}
 
-	//std::vector<uint32_t> test = {1, 2, 3, 4, 5};
-	auto node = linked_list::LinkedList<uint32_t>(69);
+	std::vector<int> test = {1, 2, 3, 4, 5};
+	auto node = linked_list::LinkedList<int>(test);
 	std::cout << argv[1] << " quiere mucho a su marion :(" << std::endl;
 	return 0;
 }

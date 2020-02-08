@@ -7,8 +7,14 @@ template<typename T>
 Node<T>::Node(T _value): value(_value) {}
 
 template<typename T>
-LinkedList<T>::LinkedList(int data): head(data){
-	std::cout << "head: " << head.value << std::endl;
+LinkedList<T>::LinkedList(int data) {
+	auto node = Node<int>(data);
+	head = &node;
+	
+	if(!head)
+		std::cout << "si, esta bien..." << std::endl;
+	if(head)
+		std::cout << "head: " << head->value << std::endl;
 }
 //LinkedList<T>::LinkedList(std::vector<T> data) {
 	//for(auto e: data)
@@ -27,7 +33,7 @@ int main(int argc, char const *argv[])
 		return 1;
 	}
 
-	int test = 1;
+	int test = 69;
 	auto list = linked_list::LinkedList<int>(test);
 	//std::vector<int> test = {1, 2, 3, 4, 5};
 	//auto list = linked_list::LinkedList<int>(test);

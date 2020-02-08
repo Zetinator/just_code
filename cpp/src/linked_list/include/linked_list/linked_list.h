@@ -17,11 +17,13 @@ class Node {
 template<typename T>
 class LinkedList {
 	private:
-		Node<T> head;
+		Node<T>* head = nullptr;
 	public:
 		LinkedList();
 		LinkedList(int _data);
 		LinkedList(std::vector<T> _data);
+	public:
+		void append(T& key);
 };
 
 } // namespace Node

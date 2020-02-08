@@ -71,13 +71,20 @@ void LinkedList<T>::erase(const T& key) {
 	//special case: empty list
 	if(!this->head)
 		return;
+	//special case: is head
+	if(this->head->value == key){
+		this->head = head->next;
+		return;
+	}
 	//general case:
 	auto node = this->head;
+	auto parent = node;
 	while(node) {
 		if(node->value == key) {
-			*node = *(node->next);
+			parent->next = node->next;
 			return;
 		}
+		parent = node;
 		node = node->next;
 	}
 	return;
@@ -119,7 +126,7 @@ int main(int argc, char const *argv[])
 	std::cout << "insert(" << key << " , " << index << ")" << std::endl;
 	linked.insert(key, index);
 	linked.traverse();
-	key = 7;
+	key = 69;
 	std::cout << "erase(" << key << ")" << std::endl;
 	linked.erase(key);
 	linked.traverse();

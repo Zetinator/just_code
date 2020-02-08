@@ -104,30 +104,14 @@ void LinkedList<T>::traverse() {
 
 } // namespace linked_list
 
-// only here for testing
+// only here for testing while we implement hte gtest module
 int main(int argc, char const *argv[])
 {
-	if (argc < 2) {
-		// report version
-		std::cout << argv[0] << " Version " << "1.0.0" << ".\n";
-		std::cout << "Usage: " << argv[0] << " <your name>" << std::endl;
-		return 1;
-	}
-
-	//testing...
 	std::vector<int> test = {1, 2, 3, 4, 5, 6, 7, 8};
 	auto linked = linked_list::LinkedList<int>(test);
-	//print list
-	linked.traverse();
 	auto node = linked.search(4);
-	if(node)
-		std::cout << "found: " << std::to_string(node->value) << std::endl;
-	int key = 69, index = 0;
-	std::cout << "insert(" << key << " , " << index << ")" << std::endl;
+	int key = 69, index = 3;
 	linked.insert(key, index);
-	linked.traverse();
-	key = 69;
-	std::cout << "erase(" << key << ")" << std::endl;
 	linked.erase(key);
 	linked.traverse();
 	return 0;

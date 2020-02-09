@@ -23,15 +23,10 @@ void Queue<T>::enqueue(const T& key) {
 		this->tail = this->head;
 		return;
 	}
-	//special case: single item
-	if(this->head == this->tail) {
-		this->head->next = std::shared_ptr<Node<T>>(new Node<T>(key));
-		this->tail = this->head->next;
-		return;
-	}
 	//general case
-	this->tail->next = std::shared_ptr<Node<T>>(new Node<T>(key));
-	this->tail = this->tail->next;
+	auto tmp = this->tail;
+	this->tail = std::shared_ptr<Node<T>>(new Node<T>(key));
+	tmp->next = this->tail;
 }
 
 template<typename T>

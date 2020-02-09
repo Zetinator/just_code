@@ -16,6 +16,20 @@ DoubleLinkedList<T>::DoubleLinkedList(const std::vector<T>& data) {
 }
 
 template<typename T>
+void DoubleLinkedList<T>::append_left(const T& key) {
+	//special case: empty list
+	if(!this->head){
+		this->head = std::shared_ptr<Node<T>>(new Node<T>(key));
+		this->tail = this->head;
+		return;
+	}
+	//general case
+	auto tmp = this->head;
+	this->head = std::shared_ptr<Node<T>>(new Node<T>(key));
+	this->head->next = tmp;
+}
+
+template<typename T>
 void DoubleLinkedList<T>::append(const T& key) {
 	//special case: empty list
 	if(!this->head){
@@ -23,17 +37,10 @@ void DoubleLinkedList<T>::append(const T& key) {
 		this->tail = this->head;
 		return;
 	}
-	//special case: single item
-	if(this->head == this->tail) {
-		this->head->next = std::shared_ptr<Node<T>>(new Node<T>(key));
-		this->tail = this->head->next;
-		this->tail->previous = this->head;
-		return;
-	}
 	//general case
-	this->tail->next = std::shared_ptr<Node<T>>(new Node<T>(key));
-	this->tail->next->previous = this->tail;
-	this->tail = this->tail->next;
+	auto tmp = this->tail;
+	this->tail = std::shared_ptr<Node<T>>(new Node<T>(key));
+	tmp->next = this->tail;
 }
 
 template<typename T>

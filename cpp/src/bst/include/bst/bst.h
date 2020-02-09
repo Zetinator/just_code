@@ -3,6 +3,12 @@
 namespace bst
 {
 
+/**
+ * basic chinable storage unit.
+ *
+ *
+ * @tparam T the type of data stored in the bst
+ */
 template <typename T>
 class Node {
 	public:
@@ -15,6 +21,13 @@ class Node {
 		std::shared_ptr<Node<T>> right = nullptr;
 };
 
+/**
+ * Standard BST implementation with log(h) lookup.
+ * where: h is the height of the tree
+ *
+ *
+ * @tparam T the type of data stored in the bst
+ */
 template<typename T>
 class BST {
 	private:
@@ -29,8 +42,12 @@ class BST {
 		std::shared_ptr<Node<T>> search(const T& key, std::shared_ptr<Node<T>> node);
 		std::shared_ptr<Node<T>> min();
 		std::shared_ptr<Node<T>> max();
-		std::shared_ptr<Node<T>> max(std::shared_ptr<Node<T>> node);
+		void rotate_left(std::shared_ptr<Node<T>> node);
+		void rotate_right(std::shared_ptr<Node<T>> node);
 		void erase(const T& key);
+		void erase(const T& key,
+				std::shared_ptr<Node<T>> node,
+				std::shared_ptr<Node<T>> father = nullptr);
 		void traverse();
 		void traverse(std::shared_ptr<Node<T>> node, int level = 0);
 };

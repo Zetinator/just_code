@@ -3,6 +3,12 @@
 namespace stack
 {
 
+/**
+ * basic chinable storage unit.
+ *
+ *
+ * @tparam T the type of data stored in the bst
+ */
 template <typename T>
 class Node {
 	public:
@@ -14,6 +20,18 @@ class Node {
 		std::shared_ptr<Node<T>> next = nullptr;
 };
 
+/**
+ * Standard Stack implementation.
+ * https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
+ *
+ * the ADT contains the following methods:
+ * - push: push a new element into the stack
+ * - pop: pop a new element from the stack
+ * - peek: quick look into the the next element from the stack
+ *
+ *
+ * @tparam T the type of data stored in the bst
+ */
 template<typename T>
 class Stack {
 	private:

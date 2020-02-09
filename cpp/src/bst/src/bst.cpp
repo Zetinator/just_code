@@ -65,6 +65,7 @@ std::shared_ptr<Node<T>> BST<T>::min() {
 	return node;
 }
 
+/// standard binary search
 template<typename T>
 std::shared_ptr<Node<T>> BST<T>::search(const T& key) {
 	if(!this->root)
@@ -82,6 +83,91 @@ std::shared_ptr<Node<T>> BST<T>::search(const T& key, std::shared_ptr<Node<T>> n
 		return this->search(key, node->left);
 	else
 		return this->search(key, node->right);
+}
+
+/// standard right rotation: https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
+template<typename T>
+void BST<T>::rotate_right(std::shared_ptr<Node<T>> node) {
+	if(!node)
+		return;
+	//set-up
+	auto tmp = std::shared_ptr<Node<T>>(new Node<T>(node->value));
+	tmp->left = node->left->right;
+	tmp->right = node->right;
+	//rotate
+	node->value = node->left->value;
+	node->left = node->left->left;
+	node->right = tmp;
+}
+
+/// standard left rotation: https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
+template<typename T>
+void BST<T>::rotate_left(std::shared_ptr<Node<T>> node) {
+	if(!node)
+		return;
+	//set-up
+	auto tmp = std::shared_ptr<Node<T>>(new Node<T>(node->value));
+	tmp->left = node->left;
+	tmp->right = node->right->left;
+	//rotate
+	node->value = node->right->value;
+	node->left = tmp;
+	node->right = node->right->right;
+}
+
+/// initializer for the recursive erase function
+template<typename T>
+void BST<T>::erase(const T& key) {
+	if(!this->root)
+		return;
+	std::shared_ptr<Node<T>> father = nullptr;
+	return erase(key, this->root, father);
+}
+
+/// rotate the node to be erased until it becomes a leaf and then delete is trivial
+template<typename T>
+void BST<T>::erase(const T& key,
+		std::shared_ptr<Node<T>> node,
+		std::shared_ptr<Node<T>> father) {
+	if(!node)
+		return;
+	if(node->value == key) {
+		//have children? keep rotating...
+		if(node->left || node->right) {
+			auto child = (node->left)?node->left:node->right;
+			if(node->left == child) {
+				this->rotate_right(node);
+				this->erase(key, node->right, node);
+			}
+			else {
+				this->rotate_left(node);
+				this->erase(key, node->left, node);
+			}
+		}
+		//no children => erase the leaf easily
+		else {
+			//special case: are you root?
+			if(!father){
+				this->root = nullptr;
+				return;
+			}
+			//general case:
+			if(father->left == node)
+				father->left = nullptr;
+			else
+				father->right = nullptr;
+			return;
+		}
+	}
+	//keep looking
+	else {
+		if(key < node->value)
+			return this->erase(key, node->left, node);
+		else
+			return this->erase(key, node->right, node);
+	}
+
+	
 }
 
 template<typename T>
@@ -109,6 +195,10 @@ int main()
 {
 	std::vector<int> test = {5,7,0,9,3,2,8};
 	auto tree = bst::BST<int>(test);
+	tree.traverse();
+	auto to_erase = 5;
+	std::cout << "----- erasing: " << to_erase << " -----" << std::endl;
+	tree.erase(to_erase);
 	tree.traverse();
 	auto node = tree.search(9);
 	if(node)

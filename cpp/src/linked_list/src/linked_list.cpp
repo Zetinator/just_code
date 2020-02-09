@@ -104,8 +104,8 @@ void LinkedList<T>::traverse() {
 
 } // namespace linked_list
 
-// only here for testing while we implement hte gtest module
-int main(int argc, char const *argv[])
+// only here for testing while we implement the gtest module
+int main()
 {
 	std::vector<int> test = {1, 2, 3, 4, 5, 6, 7, 8};
 	auto linked = linked_list::LinkedList<int>(test);

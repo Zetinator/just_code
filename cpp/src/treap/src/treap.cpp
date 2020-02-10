@@ -1,22 +1,32 @@
-#include "avl/avl.h"
+#include "treap/treap.h"
 
-namespace avl
+namespace treap
 {
 
 template<typename T>
-Node<T>::Node(T _value): value(_value) {}
+Node<T>::Node(T _value): value(_value) {
+	this->priority = this->uniform();
+}
 
 template<typename T>
-AVL<T>::AVL() {}
+double Node<T>::uniform() {
+	std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+	std::uniform_real_distribution<double> u(0, 1);
+	return u(gen);
+}
 
 template<typename T>
-AVL<T>::AVL(const std::vector<T>& data) {
+Treap<T>::Treap() {}
+
+template<typename T>
+Treap<T>::Treap(const std::vector<T>& data) {
 	for(T e: data)
 		this->insert(e);
 }
 
 template<typename T>
-void AVL<T>::insert(const T& key) {
+void Treap<T>::insert(const T& key) {
 	if(!this->root) {
 		this->root = std::shared_ptr<Node<T>>(new Node<T>(key));
 		return;
@@ -25,58 +35,36 @@ void AVL<T>::insert(const T& key) {
 }
 
 template<typename T>
-int AVL<T>::height(std::shared_ptr<Node<T>> node){
-	if(!node)
-		return 0;
-	int h_left = 0, h_right = 0;
-	if(node->left)
-		h_left += node->left->height;
-	if(node->right)
-		h_right += node->right->height;
-	return std::max(h_left, h_right) + 1;
-}
-
-template<typename T>
-void AVL<T>::insert(const T& key, std::shared_ptr<Node<T>> node) {
+void Treap<T>::insert(const T& key, std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return;
 	//standard insertion
 	if(node->value == key)
 		throw std::invalid_argument("No, duplicates allowed!");
 	if(key < node->value) {
-		if(node->left)
+		if(node->left) {
 			this->insert(key, node->left);
+		}
 		else
 			node->left = std::shared_ptr<Node<T>>(new Node<T>(key));
+		//repair violations
+		if(node->priority < node->left->priority)
+			this->rotate_right(node);
 	}
 	else {
-		if(node->right)
+		if(node->right) {
 			this->insert(key, node->right);
+		}
 		else
 			node->right = std::shared_ptr<Node<T>>(new Node<T>(key));
-	}
-	//update height
-	node->height = this->height(node);
-	//repair violations
-	auto balance_factor = this->height(node->right) - this->height(node->left);
-	//right rotation
-	if(balance_factor < -1) {
-		//compound left rotation
-		if(key > node->left->value)
-			this->rotate_left(node->left);
-		this->rotate_right(node);
-	}
-	//left rotation
-	else if(balance_factor > 1){
-		//compound right rotation
-		if(key < node->right->value)
-			this->rotate_right(node->right);
-		this->rotate_left(node);
+		//repair violations
+		if(node->priority < node->right->priority)
+			this->rotate_left(node);
 	}
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> AVL<T>::max() {
+std::shared_ptr<Node<T>> Treap<T>::max() {
 	if(!this->root)
 		return nullptr;
 	auto node = this->root;
@@ -86,7 +74,7 @@ std::shared_ptr<Node<T>> AVL<T>::max() {
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> AVL<T>::min() {
+std::shared_ptr<Node<T>> Treap<T>::min() {
 	if(!this->root)
 		return nullptr;
 	auto node = this->root;
@@ -96,14 +84,14 @@ std::shared_ptr<Node<T>> AVL<T>::min() {
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> AVL<T>::successor(const T& key) {
+std::shared_ptr<Node<T>> Treap<T>::successor(const T& key) {
 	if(!this->root)
 		return nullptr;
 	return this->successor(key, this->root);
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> AVL<T>::successor(const T& key, 
+std::shared_ptr<Node<T>> Treap<T>::successor(const T& key, 
 										   std::shared_ptr<Node<T>> node,
 										   std::shared_ptr<Node<T>> ancestor) {
 	if(!node)
@@ -128,14 +116,14 @@ std::shared_ptr<Node<T>> AVL<T>::successor(const T& key,
 
 /// standard binary search
 template<typename T>
-std::shared_ptr<Node<T>> AVL<T>::search(const T& key) {
+std::shared_ptr<Node<T>> Treap<T>::search(const T& key) {
 	if(!this->root)
 		return nullptr;
 	return this->search(key, this->root);
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> AVL<T>::search(const T& key,
+std::shared_ptr<Node<T>> Treap<T>::search(const T& key,
 										std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return nullptr;
@@ -147,45 +135,43 @@ std::shared_ptr<Node<T>> AVL<T>::search(const T& key,
 		return this->search(key, node->right);
 }
 
-/// standard right rotation: https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
+/// standard right rotation: https://en.wikipedia.org/wiki/Treap_tree#Simple_rotation
 template<typename T>
-void AVL<T>::rotate_right(std::shared_ptr<Node<T>> node) {
+void Treap<T>::rotate_right(std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return;
 	//set-up
 	auto tmp = std::shared_ptr<Node<T>>(new Node<T>(node->value));
+	tmp->priority = node->priority;
 	tmp->left = node->left->right;
 	tmp->right = node->right;
 	//rotate
 	node->value = node->left->value;
+	node->priority = node->left->priority;
 	node->left = node->left->left;
 	node->right = tmp;
-	//update height...
-	node->right->height = this->height(node->right);
-	node->height = this->height(node);
 }
 
-/// standard left rotation: https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
+/// standard left rotation: https://en.wikipedia.org/wiki/Treap_tree#Simple_rotation
 template<typename T>
-void AVL<T>::rotate_left(std::shared_ptr<Node<T>> node) {
+void Treap<T>::rotate_left(std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return;
 	//set-up
 	auto tmp = std::shared_ptr<Node<T>>(new Node<T>(node->value));
+	tmp->priority = node->priority;
 	tmp->left = node->left;
 	tmp->right = node->right->left;
 	//rotate
 	node->value = node->right->value;
+	node->priority = node->right->priority;
 	node->left = tmp;
 	node->right = node->right->right;
-	//update height...
-	node->left->height = this->height(node->left);
-	node->height = this->height(node);
 }
 
 /// initializer for the recursive erase function
 template<typename T>
-void AVL<T>::erase(const T& key) {
+void Treap<T>::erase(const T& key) {
 	if(!this->root)
 		return;
 	std::shared_ptr<Node<T>> father = nullptr;
@@ -194,7 +180,7 @@ void AVL<T>::erase(const T& key) {
 
 /// rotate the node to be erased until it becomes a leaf and then delete is trivial
 template<typename T>
-void AVL<T>::erase(const T& key,
+void Treap<T>::erase(const T& key,
 				   std::shared_ptr<Node<T>> node,
 				   std::shared_ptr<Node<T>> father) {
 	if(!node)
@@ -229,57 +215,39 @@ void AVL<T>::erase(const T& key,
 	}
 	//keep looking
 	else {
-		if(key < node->value)
+		if(key < node->value) 
 			this->erase(key, node->left, node);
 		else
 			this->erase(key, node->right, node);
 	}
-	//update height
-	node->height = this->height(node);
-	//repair violations
-	auto balance_factor = this->height(node->right) - this->height(node->left);
-	//right rotation
-	if(balance_factor < -1) {
-		//compound left rotation
-		if(this->height(node->left->right) > this->height(node->left->left))
-			this->rotate_left(node->left);
-		this->rotate_right(node);
-	}
-	//left rotation
-	else if(balance_factor > 1){
-		//compound right rotation
-		if(this->height(node->right->left) > this->height(node->right->right))
-			this->rotate_right(node->right);
-		this->rotate_left(node);
-	}
 }
 
 template<typename T>
-void AVL<T>::traverse() {
+void Treap<T>::traverse() {
 	if(!this->root)
 		return;
 	return traverse(this->root);
 }
 
 template<typename T>
-void AVL<T>::traverse(std::shared_ptr<Node<T>> node, int level) {
+void Treap<T>::traverse(std::shared_ptr<Node<T>> node, int level) {
 	if(!node)
 		return;
 	this->traverse(node->left, level+1);
 	for(auto i = 0; i < level; i++)
 		std::cout << "\t";
 	std::cout << "-->(" << std::to_string(node->value) << ")"
-				<< "h" << node->height << std::endl;
+				<< "p" << node->priority << std::endl;
 	this->traverse(node->right, level+1);
 }
 
-} // namespace avl
+} // namespace treap
 
 // only here for testing while we implement the gtest module
 int main()
 {
-	std::vector<int> test = {5,7,0,9,3,2,8};
-	auto tree = avl::AVL<int>(test);
+	std::vector<int> test = {5,7,0,9,3,2,8,12,1};
+	auto tree = treap::Treap<int>(test);
 	tree.traverse();
 	auto to_erase = 5;
 	std::cout << "----- erasing: " << to_erase << " -----" << std::endl;
@@ -294,7 +262,7 @@ int main()
 	node = tree.min();
 	if(node)
 		std::cout << "min node found: " << std::to_string(node->value) << std::endl;
-	node = tree.successor(6);
+	node = tree.successor(8);
 	if(node)
 		std::cout << "successor node found: " << std::to_string(node->value) << std::endl;
 	return 0;

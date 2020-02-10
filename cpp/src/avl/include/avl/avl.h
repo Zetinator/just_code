@@ -1,13 +1,13 @@
 #include <bits/stdc++.h>
 
-namespace bst
+namespace avl
 {
 
 /**
  * basic chinable storage unit.
  *
  *
- * @tparam T the type of data stored in the bst
+ * @tparam T the type of data stored in the avl
  */
 template <typename T>
 class Node {
@@ -17,12 +17,13 @@ class Node {
 		Node(T _value);
 		//member variables
 		T value;
+		int height = 1;
 		std::shared_ptr<Node<T>> left = nullptr;
 		std::shared_ptr<Node<T>> right = nullptr;
 };
 
 /**
- * Standard BST implementation with log(h) lookup.
+ * Standard AVL implementation with log(h) lookup.
  * where: h is the height of the tree
  *
  * The ADT contains the following methods:
@@ -35,12 +36,12 @@ class Node {
  * @tparam T the type of data stored in the bst
  */
 template<typename T>
-class BST {
+class AVL {
 	private:
 		std::shared_ptr<Node<T>> root = nullptr;
 	public:
-		BST();
-		BST(const std::vector<T>& _data);
+		AVL();
+		AVL(const std::vector<T>& _data);
 	public:
 		void insert(const T& key);
 		std::shared_ptr<Node<T>> search(const T& key);
@@ -57,6 +58,7 @@ class BST {
 				std::shared_ptr<Node<T>> node,
 				std::shared_ptr<Node<T>> father = nullptr);
 		void traverse(std::shared_ptr<Node<T>> node, int level = 0);
+		int height(std::shared_ptr<Node<T>> node);
 };
 
 } // namespace Node

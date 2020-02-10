@@ -1,22 +1,22 @@
-#include "bst/bst.h"
+#include "avl/avl.h"
 
-namespace bst
+namespace avl
 {
 
 template<typename T>
 Node<T>::Node(T _value): value(_value) {}
 
 template<typename T>
-BST<T>::BST() {}
+AVL<T>::AVL() {}
 
 template<typename T>
-BST<T>::BST(const std::vector<T>& data) {
+AVL<T>::AVL(const std::vector<T>& data) {
 	for(T e: data)
 		this->insert(e);
 }
 
 template<typename T>
-void BST<T>::insert(const T& key) {
+void AVL<T>::insert(const T& key) {
 	if(!this->root) {
 		this->root = std::shared_ptr<Node<T>>(new Node<T>(key));
 		return;
@@ -25,9 +25,22 @@ void BST<T>::insert(const T& key) {
 }
 
 template<typename T>
-void BST<T>::insert(const T& key, std::shared_ptr<Node<T>> node) {
+int AVL<T>::height(std::shared_ptr<Node<T>> node){
+	if(!node)
+		return 0;
+	int h_left = 0, h_right = 0;
+	if(node->left)
+		h_left += node->left->value;
+	if(node->right)
+		h_right += node->right->value;
+	return std::max(h_left, h_right) + 1;
+}
+
+template<typename T>
+void AVL<T>::insert(const T& key, std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return;
+	//standard insertion
 	if(node->value == key)
 		throw std::invalid_argument("No, duplicates allowed!");
 	if(key < node->value) {
@@ -42,10 +55,28 @@ void BST<T>::insert(const T& key, std::shared_ptr<Node<T>> node) {
 		else
 			node->right = std::shared_ptr<Node<T>>(new Node<T>(key));
 	}
+	//update height
+	node->height = this->height(node);
+	//repair violations
+	auto balance_factor = this->height(node->right) - this->height(node->left);
+	//right rotation
+	if(balance_factor < -1) {
+		//compound left rotation
+		if(key > node->left->value)
+			this->rotate_left(node->left);
+		this->rotate_right(node);
+	}
+	//left rotation
+	else if(balance_factor > 1){
+		//compound right rotation
+		if(key < node->right->value)
+			this->rotate_right(node->right);
+		this->rotate_left(node);
+	}
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> BST<T>::max() {
+std::shared_ptr<Node<T>> AVL<T>::max() {
 	if(!this->root)
 		return nullptr;
 	auto node = this->root;
@@ -55,7 +86,7 @@ std::shared_ptr<Node<T>> BST<T>::max() {
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> BST<T>::min() {
+std::shared_ptr<Node<T>> AVL<T>::min() {
 	if(!this->root)
 		return nullptr;
 	auto node = this->root;
@@ -66,14 +97,14 @@ std::shared_ptr<Node<T>> BST<T>::min() {
 
 /// standard binary search
 template<typename T>
-std::shared_ptr<Node<T>> BST<T>::search(const T& key) {
+std::shared_ptr<Node<T>> AVL<T>::search(const T& key) {
 	if(!this->root)
 		return nullptr;
 	return this->search(key, this->root);
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> BST<T>::search(const T& key, std::shared_ptr<Node<T>> node) {
+std::shared_ptr<Node<T>> AVL<T>::search(const T& key, std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return nullptr;
 	if(key == node->value)
@@ -86,7 +117,7 @@ std::shared_ptr<Node<T>> BST<T>::search(const T& key, std::shared_ptr<Node<T>> n
 
 /// standard right rotation: https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
 template<typename T>
-void BST<T>::rotate_right(std::shared_ptr<Node<T>> node) {
+void AVL<T>::rotate_right(std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return;
 	//set-up
@@ -97,11 +128,14 @@ void BST<T>::rotate_right(std::shared_ptr<Node<T>> node) {
 	node->value = node->left->value;
 	node->left = node->left->left;
 	node->right = tmp;
+	//update height...
+	node->right->height = this->height(node->right);
+	node->height = this->height(node);
 }
 
 /// standard left rotation: https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation
 template<typename T>
-void BST<T>::rotate_left(std::shared_ptr<Node<T>> node) {
+void AVL<T>::rotate_left(std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return;
 	//set-up
@@ -112,11 +146,14 @@ void BST<T>::rotate_left(std::shared_ptr<Node<T>> node) {
 	node->value = node->right->value;
 	node->left = tmp;
 	node->right = node->right->right;
+	//update height...
+	node->left->height = this->height(node->left);
+	node->height = this->height(node);
 }
 
 /// initializer for the recursive erase function
 template<typename T>
-void BST<T>::erase(const T& key) {
+void AVL<T>::erase(const T& key) {
 	if(!this->root)
 		return;
 	std::shared_ptr<Node<T>> father = nullptr;
@@ -125,7 +162,7 @@ void BST<T>::erase(const T& key) {
 
 /// rotate the node to be erased until it becomes a leaf and then delete is trivial
 template<typename T>
-void BST<T>::erase(const T& key,
+void AVL<T>::erase(const T& key,
 		std::shared_ptr<Node<T>> node,
 		std::shared_ptr<Node<T>> father) {
 	if(!node)
@@ -170,30 +207,31 @@ void BST<T>::erase(const T& key,
 }
 
 template<typename T>
-void BST<T>::traverse() {
+void AVL<T>::traverse() {
 	if(!this->root)
 		return;
 	return traverse(this->root);
 }
 
 template<typename T>
-void BST<T>::traverse(std::shared_ptr<Node<T>> node, int level) {
+void AVL<T>::traverse(std::shared_ptr<Node<T>> node, int level) {
 	if(!node)
 		return;
 	this->traverse(node->left, level+1);
 	for(auto i = 0; i < level; i++)
 		std::cout << "\t";
-	std::cout << "-->(" << std::to_string(node->value) << ")" << std::endl;
+	std::cout << "-->(" << std::to_string(node->value) << ")"
+				<< "h" << node->height << std::endl;
 	this->traverse(node->right, level+1);
 }
 
-} // namespace bst
+} // namespace avl
 
 // only here for testing while we implement the gtest module
 int main()
 {
 	std::vector<int> test = {5,7,0,9,3,2,8};
-	auto tree = bst::BST<int>(test);
+	auto tree = avl::AVL<int>(test);
 	tree.traverse();
 	auto to_erase = 5;
 	std::cout << "----- erasing: " << to_erase << " -----" << std::endl;

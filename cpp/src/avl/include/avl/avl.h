@@ -45,6 +45,7 @@ class AVL {
 	public:
 		void insert(const T& key);
 		std::shared_ptr<Node<T>> search(const T& key);
+		std::shared_ptr<Node<T>> successor(const T& key);
 		std::shared_ptr<Node<T>> min();
 		std::shared_ptr<Node<T>> max();
 		void erase(const T& key);
@@ -52,11 +53,14 @@ class AVL {
 	private:
 		void insert(const T& key, std::shared_ptr<Node<T>> node);
 		std::shared_ptr<Node<T>> search(const T& key, std::shared_ptr<Node<T>> node);
+		std::shared_ptr<Node<T>> successor(const T& key,
+										   std::shared_ptr<Node<T>> node,
+										   std::shared_ptr<Node<T>> ancestor=nullptr);
 		void rotate_left(std::shared_ptr<Node<T>> node);
 		void rotate_right(std::shared_ptr<Node<T>> node);
 		void erase(const T& key,
-				std::shared_ptr<Node<T>> node,
-				std::shared_ptr<Node<T>> father = nullptr);
+				   std::shared_ptr<Node<T>> node,
+				   std::shared_ptr<Node<T>> father=nullptr);
 		void traverse(std::shared_ptr<Node<T>> node, int level = 0);
 		int height(std::shared_ptr<Node<T>> node);
 };

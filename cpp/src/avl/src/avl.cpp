@@ -95,6 +95,37 @@ std::shared_ptr<Node<T>> AVL<T>::min() {
 	return node;
 }
 
+template<typename T>
+std::shared_ptr<Node<T>> AVL<T>::successor(const T& key) {
+	if(!this->root)
+		return nullptr;
+	return this->successor(key, this->root);
+}
+
+template<typename T>
+std::shared_ptr<Node<T>> AVL<T>::successor(const T& key, 
+										   std::shared_ptr<Node<T>> node,
+										   std::shared_ptr<Node<T>> ancestor) {
+	if(!node)
+		return ancestor;
+	if(node->value == key) {
+		//no right child to explore, return the next biggest ancestor
+		if(!node->right)
+			return ancestor;
+		//explore and return the min of the left subtree
+		else {
+			auto tmp = node->right;
+			while(tmp->left)
+				tmp = tmp->left;
+			return tmp;
+		}
+	}
+	if(key < node->value)
+		return this->successor(key, node->left, node);
+	else
+		return this->successor(key, node->right, ancestor);
+}
+
 /// standard binary search
 template<typename T>
 std::shared_ptr<Node<T>> AVL<T>::search(const T& key) {
@@ -104,7 +135,8 @@ std::shared_ptr<Node<T>> AVL<T>::search(const T& key) {
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> AVL<T>::search(const T& key, std::shared_ptr<Node<T>> node) {
+std::shared_ptr<Node<T>> AVL<T>::search(const T& key,
+										std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return nullptr;
 	if(key == node->value)
@@ -163,8 +195,8 @@ void AVL<T>::erase(const T& key) {
 /// rotate the node to be erased until it becomes a leaf and then delete is trivial
 template<typename T>
 void AVL<T>::erase(const T& key,
-		std::shared_ptr<Node<T>> node,
-		std::shared_ptr<Node<T>> father) {
+				   std::shared_ptr<Node<T>> node,
+				   std::shared_ptr<Node<T>> father) {
 	if(!node)
 		return;
 	if(node->value == key) {
@@ -251,8 +283,8 @@ int main()
 	tree.traverse();
 	auto to_erase = 5;
 	std::cout << "----- erasing: " << to_erase << " -----" << std::endl;
-	tree.erase(to_erase);
-	tree.traverse();
+	//tree.erase(to_erase);
+	//tree.traverse();
 	auto node = tree.search(9);
 	if(node)
 		std::cout << "node found: " << std::to_string(node->value) << std::endl;
@@ -262,5 +294,8 @@ int main()
 	node = tree.min();
 	if(node)
 		std::cout << "min node found: " << std::to_string(node->value) << std::endl;
+	node = tree.successor(8);
+	if(node)
+		std::cout << "successor node found: " << std::to_string(node->value) << std::endl;
 	return 0;
 }

@@ -30,9 +30,9 @@ int AVL<T>::height(std::shared_ptr<Node<T>> node){
 		return 0;
 	int h_left = 0, h_right = 0;
 	if(node->left)
-		h_left += node->left->value;
+		h_left += node->left->height;
 	if(node->right)
-		h_right += node->right->value;
+		h_right += node->right->height;
 	return std::max(h_left, h_right) + 1;
 }
 
@@ -198,12 +198,28 @@ void AVL<T>::erase(const T& key,
 	//keep looking
 	else {
 		if(key < node->value)
-			return this->erase(key, node->left, node);
+			this->erase(key, node->left, node);
 		else
-			return this->erase(key, node->right, node);
+			this->erase(key, node->right, node);
 	}
-
-	
+	//update height
+	node->height = this->height(node);
+	//repair violations
+	auto balance_factor = this->height(node->right) - this->height(node->left);
+	//right rotation
+	if(balance_factor < -1) {
+		//compound left rotation
+		if(this->height(node->left->right) > this->height(node->left->left))
+			this->rotate_left(node->left);
+		this->rotate_right(node);
+	}
+	//left rotation
+	else if(balance_factor > 1){
+		//compound right rotation
+		if(this->height(node->right->left) > this->height(node->right->right))
+			this->rotate_right(node->right);
+		this->rotate_left(node);
+	}
 }
 
 template<typename T>

@@ -44,6 +44,7 @@ class BST {
 	public:
 		void insert(const T& key);
 		std::shared_ptr<Node<T>> search(const T& key);
+		std::shared_ptr<Node<T>> successor(const T& key);
 		std::shared_ptr<Node<T>> min();
 		std::shared_ptr<Node<T>> max();
 		void erase(const T& key);
@@ -51,6 +52,9 @@ class BST {
 	private:
 		void insert(const T& key, std::shared_ptr<Node<T>> node);
 		std::shared_ptr<Node<T>> search(const T& key, std::shared_ptr<Node<T>> node);
+		std::shared_ptr<Node<T>> successor(const T& key,
+										   std::shared_ptr<Node<T>> node,
+										   std::shared_ptr<Node<T>> ancestor=nullptr);
 		void rotate_left(std::shared_ptr<Node<T>> node);
 		void rotate_right(std::shared_ptr<Node<T>> node);
 		void erase(const T& key,

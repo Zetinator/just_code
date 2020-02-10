@@ -283,8 +283,8 @@ int main()
 	tree.traverse();
 	auto to_erase = 5;
 	std::cout << "----- erasing: " << to_erase << " -----" << std::endl;
-	//tree.erase(to_erase);
-	//tree.traverse();
+	tree.erase(to_erase);
+	tree.traverse();
 	auto node = tree.search(9);
 	if(node)
 		std::cout << "node found: " << std::to_string(node->value) << std::endl;

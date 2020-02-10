@@ -73,7 +73,8 @@ std::shared_ptr<Node<T>> BST<T>::search(const T& key) {
 }
 
 template<typename T>
-std::shared_ptr<Node<T>> BST<T>::search(const T& key, std::shared_ptr<Node<T>> node) {
+std::shared_ptr<Node<T>> BST<T>::search(const T& key,
+										std::shared_ptr<Node<T>> node) {
 	if(!node)
 		return nullptr;
 	if(key == node->value)
@@ -82,6 +83,37 @@ std::shared_ptr<Node<T>> BST<T>::search(const T& key, std::shared_ptr<Node<T>> n
 		return this->search(key, node->left);
 	else
 		return this->search(key, node->right);
+}
+
+template<typename T>
+std::shared_ptr<Node<T>> BST<T>::successor(const T& key) {
+	if(!this->root)
+		return nullptr;
+	return this->successor(key, this->root);
+}
+
+template<typename T>
+std::shared_ptr<Node<T>> BST<T>::successor(const T& key, 
+										   std::shared_ptr<Node<T>> node,
+										   std::shared_ptr<Node<T>> ancestor) {
+	if(!node)
+		return ancestor;
+	if(node->value == key) {
+		//no right child to explore, return the next biggest ancestor
+		if(!node->right)
+			return ancestor;
+		//explore and return the min of the left subtree
+		else {
+			auto tmp = node->right;
+			while(tmp->left)
+				tmp = tmp->left;
+			return tmp;
+		}
+	}
+	if(key < node->value)
+		return this->successor(key, node->left, node);
+	else
+		return this->successor(key, node->right, ancestor);
 }
 
 /// standard right rotation: https://en.wikipedia.org/wiki/AVL_tree#Simple_rotation

@@ -19,15 +19,13 @@ def quick_select(x: list, k: int) -> int:
     """random version, it's been a long time old friend...
     NOTE: k -> (1, len(x))
     """
-    if not x: return
-    if len(x) == 1: return x[0]
-    # choose a random pivot
     pivot = int(uniform(0, len(x)))
-    # divide
-    left = [e for e in x if e <= x[pivot]]
-    right = [e for e in x if e > x[pivot]]
-    # keep exploring the DAG
-    if len(left) > k:
+    left, right = [], []
+    for i, e in enumerate(x):
+        if e <= x[pivot] and i != pivot: left.append(e)
+        if e > x[pivot]: right.append(e)
+    if k == len(left): return x[pivot]
+    if k < len(left):
         return quick_select(left, k)
-    else: 
-        return quick_select(right, k-len(left))
+    else:
+        return quick_select(right, k-len(left)-1)

@@ -10,7 +10,7 @@ def r(x, y, record=0):
     """recursive implementation
     """
     if not x or not y: return record
-    # print(f'STATUs: x: {x}, y: {y}, record: {record}')
+    print(f'STATUs: x: {x}, y: {y}, record: {record}')
     if x[0] == y[0]:
         return max(record, r(x[1:], y[1:], record+1))
     return max(record, r(x, y[1:], 0), r(x[1:], y, 0))

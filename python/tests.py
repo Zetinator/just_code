@@ -162,7 +162,7 @@ class TestDataAlgorithms(unittest.TestCase):
     def test_quick_select(self):
         test = [51, 3, 35, 92, 11, 13, 29, 12, 68, 77, 59, 25, 73, 32, 23, 3, 27, 23, 21]
         ans = [3, 3, 11, 12, 13, 21, 23, 23, 25, 27, 29, 32, 35, 51, 59, 68, 73, 77, 92]
-        self.assertEqual(quick_select(test, 8), 27)
+        self.assertEqual(quick_select(test, 9), 27)
     def test_boyer_moore(self):
         pattern = 'marion'
         text = "erick quiere a marion, aunque marion ya no nos hable :("
